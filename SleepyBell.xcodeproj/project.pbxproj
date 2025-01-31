@@ -11,6 +11,8 @@
 		346A7D412D4D069B00FA0948 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346A7D402D4D069B00FA0948 /* ContentView.swift */; };
 		346A7D432D4D069E00FA0948 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346A7D422D4D069E00FA0948 /* Assets.xcassets */; };
 		346A7D462D4D069E00FA0948 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */; };
+		34A919C42D4D1D5F000E13F3 /* DayNight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A919C32D4D1D5F000E13F3 /* DayNight.swift */; };
+		34A919C62D4D1DC7000E13F3 /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A919C52D4D1DC7000E13F3 /* Form.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		346A7D402D4D069B00FA0948 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		346A7D422D4D069E00FA0948 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		34A919C32D4D1D5F000E13F3 /* DayNight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayNight.swift; sourceTree = "<group>"; };
+		34A919C52D4D1DC7000E13F3 /* Form.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +59,8 @@
 				346A7D402D4D069B00FA0948 /* ContentView.swift */,
 				346A7D422D4D069E00FA0948 /* Assets.xcassets */,
 				346A7D442D4D069E00FA0948 /* Preview Content */,
+				34A919C32D4D1D5F000E13F3 /* DayNight.swift */,
+				34A919C52D4D1DC7000E13F3 /* Form.swift */,
 			);
 			path = SleepyBell;
 			sourceTree = "<group>";
@@ -138,6 +144,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				346A7D412D4D069B00FA0948 /* ContentView.swift in Sources */,
+				34A919C62D4D1DC7000E13F3 /* Form.swift in Sources */,
+				34A919C42D4D1D5F000E13F3 /* DayNight.swift in Sources */,
 				346A7D3F2D4D069B00FA0948 /* SleepyBellApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
