@@ -8,16 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var starNum: Int = 100
+    @State private var showSettings = false
     @State private var showForm = false
     @State private var selectedDayNight: String = "AM"
     @State private var currentTime: String = ""
     @State private var darkMode: String = "Dark"
     @State private var alert: Bool = false
+    @State private var alarmArr: AlarmList = AlarmList()
     
     
     var body: some View {
         ZStack {
-            DayNightToggleView(isNight: selectedDayNight == "AM" ? false : true)
+            DayNightToggleView(isNight: selectedDayNight == "AM" ? false : true, stars: $starNum)
             
             VStack {
                 Text("SleepyBell")
@@ -33,21 +36,38 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     
                 Spacer()
-                Button(action: {
-                    withAnimation {
-                        showForm.toggle()
+                HStack {
+                    Button(action: {
+                        withAnimation {
+                            showForm.toggle()
+                        }
+                    }) {
+                        Image(systemName: "alarm.fill") // Use a system image for the alarm icon
+                            .resizable()
+                            .frame(width: 24, height: 24) // Set the size of the icon
+                            .foregroundColor(.black) // Set the icon color
+                            .padding()
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(Capsule())
+                            .shadow(radius: 5)
                     }
-                }) {
-                    Image(systemName: "alarm.fill") // Use a system image for the alarm icon
-                        .resizable()
-                        .frame(width: 24, height: 24) // Set the size of the icon
-                        .foregroundColor(.black) // Set the icon color
                     .padding()
-                    .background(Color.white.opacity(0.8))
-                    .clipShape(Capsule())
-                    .shadow(radius: 5)
+                    Button(action: {
+                        withAnimation {
+                            showSettings.toggle()
+                        }
+                    }) {
+                        Image(systemName: "gearshape.2") // Use a system image for the alarm icon
+                            .resizable()
+                            .frame(width: 30, height: 24) // Set the size of the icon
+                            .foregroundColor(.black) // Set the icon color
+                            .padding()
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(Capsule())
+                            .shadow(radius: 5)
+                    }
+                    .padding()
                 }
-                .padding()
                 
             }
             .alert(isPresented: $alert) {
@@ -75,7 +95,11 @@ struct ContentView: View {
             
             
             if showForm {
-                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert)
+                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert, alarms: $alarmArr)
+            }
+            
+            if showSettings {
+                Settings(starAmount: $starNum, showForm: $showSettings)
             }
         }
     }

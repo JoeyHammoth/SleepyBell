@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+@_spi(Advanced) import SwiftUIIntrospect
 
 struct HandView: View {
     
@@ -155,12 +156,13 @@ struct DraggableTransparentForm: View {
     @Binding var mode: String
     @Binding var showForm: Bool
     @Binding var alertBool: Bool
+    @Binding var alarms: AlarmList
     
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
     @State private var dragOffset: CGFloat = 0 // Track user movement
-    @State private var alarms: AlarmList = AlarmList()
+    //@State private var alarms: AlarmList = AlarmList()
     
     // Temp vars for each alarm
     @State private var sec: Int = 0
@@ -175,110 +177,130 @@ struct DraggableTransparentForm: View {
                 .frame(width: 50, height: 5)
                 .foregroundColor(.gray.opacity(0.8))
                 .padding(5)
-            Form {
-                Section {
-                    Text("This is your list of alarms. Start setting up your main alarm which is set to the time that you ideally want to wake up. Afterwards, create a number of several alarms in whatever increments you want. These secondary alarms will set off and will prompt you as to whether you have woken up or not. They cannot be deactivated after creation.")
-                } header: {
-                     Text("About")
-                        .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
-                }
-                
-                ForEach(0..<alarms.idList.count, id: \.self) { index in // Must use explicit closure parameter index instead of $0
+            NavigationStack {
+                Form {
                     Section {
-                        HStack {
-                            Text(alarms.layout[index])
-                                .font(.system(size: 30, weight: .bold))
-                                .foregroundStyle(Color.white)
-                            Spacer()
-                            ZStack {
-                                Circle()
-                                    .stroke(lineWidth:5)
-                                    .padding(8)
-                                    .foregroundColor(Color.white)
-                                
-                                HandView(length: 60, thickness: 3, color: .white)
-                                    .rotationEffect(.degrees(Double(alarms.secList[index]) * 6), anchor: .center)
-                                
-                                HandView(length: 50, thickness: 6, color: .white)
-                                    .rotationEffect(.degrees(Double(alarms.minList[index]) * 6), anchor: .center)
-                                
-                                HandView(length: 35, thickness: 8, color: .white)
-                                    .rotationEffect(.degrees((Double(alarms.hourList[index]) * 30) + (Double(alarms.minList[index]) / 2)), anchor: .center)
-                            }
-                            .frame(width: 150, height: 150)
-                        }
+                        Text("""
+                        This is your list of alarms. Start setting up your main alarm which is set to the time that you ideally want to wake up.
+                        
+                        Afterwards, create a number of several alarms in whatever increments you want.
+                        
+                        These secondary alarms will set off and will prompt you as to whether you have woken up or not.
+                        
+                        
+                        """) +
+                        Text("""
+                        They cannot be deactivated until all alarms have ringed.
+                        """)
+                        .foregroundColor(Color.red)
                     } header: {
-                        Text("Alarm \(alarms.idList[index]) (\(alarms.primaryList[index]))")
+                        Text("About")
                             .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .listRowBackground(alarms.mornList[index] == "Morning" ?
-                        LinearGradient(gradient: Gradient(colors: [Color.cyan.opacity(0.5), Color.white.opacity(0.5)]),
-                                               startPoint: .top,
-                                               endPoint: .bottom)
-                                       :
-                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.5), Color.blue.opacity(0.5)]),
-                                               startPoint: .top,
-                                               endPoint: .bottom)
-                    )
-                }
-                
-                Section {
-                    Picker("Second", selection: $sec) {
-                        ForEach(0..<60, id: \.self) {
-                            Text("\($0)")
+                    
+                    ForEach(0..<alarms.idList.count, id: \.self) { index in // Must use explicit closure parameter index instead of $0
+                        Section {
+                            HStack {
+                                Text(alarms.layout[index])
+                                    .font(.system(size: 30, weight: .bold))
+                                    .foregroundStyle(Color.white)
+                                Spacer()
+                                ZStack {
+                                    Circle()
+                                        .stroke(lineWidth:5)
+                                        .padding(8)
+                                        .foregroundColor(Color.white)
+                                    
+                                    HandView(length: 60, thickness: 3, color: .white)
+                                        .rotationEffect(.degrees(Double(alarms.secList[index]) * 6), anchor: .center)
+                                    
+                                    HandView(length: 50, thickness: 6, color: .white)
+                                        .rotationEffect(.degrees(Double(alarms.minList[index]) * 6), anchor: .center)
+                                    
+                                    HandView(length: 35, thickness: 8, color: .white)
+                                        .rotationEffect(.degrees((Double(alarms.hourList[index]) * 30) + (Double(alarms.minList[index]) / 2)), anchor: .center)
+                                }
+                                .frame(width: 150, height: 150)
+                            }
+                        } header: {
+                            Text("Alarm \(alarms.idList[index]) (\(alarms.primaryList[index]))")
+                                .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                         }
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .listRowBackground(alarms.mornList[index] == "Morning" ?
+                                           LinearGradient(gradient: Gradient(colors: [Color.cyan.opacity(0.5), Color.white.opacity(0.5)]),
+                                                          startPoint: .top,
+                                                          endPoint: .bottom)
+                                           :
+                                            LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.5), Color.blue.opacity(0.5)]),
+                                                           startPoint: .top,
+                                                           endPoint: .bottom)
+                        )
                     }
-                    Picker("Minute", selection: $min) {
-                        ForEach(0..<60, id: \.self) {
-                            Text("\($0)")
-                        }
-                    }
-                    Picker("Hour", selection: $hour) {
-                        ForEach(1...12, id: \.self) {
-                            Text("\($0)")
-                        }
-                    }
-                    Picker("Day/Night", selection: $day) {
-                        ForEach(dayNightList, id: \.self) {
-                            Text($0)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    Button("Add Alarm") {
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            alarms.idList.append(alarms.idList.count + 1)
-                            alarms.secList.append(sec)
-                            alarms.minList.append(min)
-                            alarms.hourList.append(hour)
-                            alarms.dayList.append(day)
-                            
-                            if alarms.idList.count > 1 && (alarms.diffList.last! < 60 || alarms.diffList.last! > 600) {
-                                alarms.removeLastAll()
-                                alertBool = true
+                    
+                    Section {
+                        Picker("Second", selection: $sec) {
+                            ForEach(0..<60, id: \.self) {
+                                Text("\($0)")
                             }
                         }
-                    }
-                } header: {
-                    Text("Add new alarm")
-                        .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
-                }
-                
-                Section {
-                    Picker("Day/Night", selection: $mode) {
-                        ForEach(modeList, id: \.self) {
-                            Text($0)
+                        Picker("Minute", selection: $min) {
+                            ForEach(0..<60, id: \.self) {
+                                Text("\($0)")
+                            }
                         }
+                        Picker("Hour", selection: $hour) {
+                            ForEach(1...12, id: \.self) {
+                                Text("\($0)")
+                            }
+                        }
+                        Picker("Day/Night", selection: $day) {
+                            ForEach(dayNightList, id: \.self) {
+                                Text($0)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        Button("Add Alarm") {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                alarms.idList.append(alarms.idList.count + 1)
+                                alarms.secList.append(sec)
+                                alarms.minList.append(min)
+                                alarms.hourList.append(hour)
+                                alarms.dayList.append(day)
+                                
+                                if alarms.idList.count > 1 && (alarms.diffList.last! < 60 || alarms.diffList.last! > 600) {
+                                    alarms.removeLastAll()
+                                    alertBool = true
+                                }
+                            }
+                        }
+                    } header: {
+                        Text("Add new alarm")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
-                    .pickerStyle(.segmented)
-                } header: {
-                    Text("Set background")
-                        .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                    
+                    Section {
+                        Picker("Day/Night", selection: $mode) {
+                            ForEach(modeList, id: \.self) {
+                                Text($0)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    } header: {
+                        Text("Set background")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                    }
+                    
+                    
                 }
-                
-                
+                .navigationTitle("Alarms")
+                .scrollContentBackground(.hidden) // Hide form background
             }
-            .scrollContentBackground(.hidden) // Hide form background
+            .introspect(.navigationStack, on: .iOS(.v16...)) {
+                $0.viewControllers.forEach { controller in
+                    controller.view.backgroundColor = .clear
+                }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial) // Transparent blur effect

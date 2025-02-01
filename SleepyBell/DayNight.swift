@@ -9,13 +9,15 @@ import SwiftUI
 
 struct DayNightToggleView: View {
     var isNight: Bool
+    
+    @Binding var stars: Int
 
     var body: some View {
         ZStack {
             DaylightBackgroundView()
                 .opacity(isNight ? 0 : 1)  // Fade out daytime when switching to night
             
-            StarryBackgroundView()
+            StarryBackgroundView(starCount: $stars)
                 .opacity(isNight ? 1 : 0)  // Fade in stars when switching to night
         }
         .animation(.easeInOut(duration: 2.0), value: isNight)  // Smooth transition
@@ -59,7 +61,7 @@ struct DaylightBackgroundView: View {
 struct StarryBackgroundView: View {
     @State private var stars: [Star] = []
     
-    let starCount = 100
+    @Binding var starCount: Int
     
     var body: some View {
         GeometryReader { geometry in
@@ -77,6 +79,9 @@ struct StarryBackgroundView: View {
             .onAppear {
                 generateStars(in: geometry.size)
                 animateStars()
+            }
+            .onChange(of: starCount) { _ in
+                generateStars(in: geometry.size)
             }
         }
     }
