@@ -7,13 +7,110 @@
 
 import SwiftUI
 
+struct HandView: View {
+    
+    /// The length of the hand (the vertical size of the rectangle).
+    let length: CGFloat
+    
+    /// The thickness of the hand (the horizontal size of the rectangle).
+    let thickness: CGFloat
+    
+    /// The color of the hand. Default is white.
+    let color: Color
+    
+    /// Creates a new `HandView` instance with the specified length, thickness, and optional color.
+    ///
+    /// - Parameters:
+    ///   - length: The vertical length of the hand (in points).
+    ///   - thickness: The horizontal thickness of the hand (in points).
+    ///   - color: The color of the hand. Defaults to `.white` if not specified.
+    init(length: CGFloat, thickness: CGFloat, color: Color = .white) {
+        self.length = length
+        self.thickness = thickness
+        self.color = color
+    }
+    
+    /// The view's content and layout.
+    ///
+    /// The body of the view creates a rectangle with the specified color and frame size. The rectangle is then offset vertically to align the bottom edge to the center.
+    var body: some View {
+        Rectangle()
+            .fill(color)
+            .frame(width: thickness, height: length)
+            .offset(y: -length / 2)  // Align bottom at center
+    }
+}
+
 struct AlarmList {
     var idList: [Int] = []
-    var primaryList: [String] = []
+    
+    var primaryList: [String] {
+        var primArr: [String] = []
+        for i in 0..<idList.count {
+            if i == 0 {
+                primArr.append("Primary")
+            } else {
+                primArr.append("Secondary")
+            }
+        }
+        return primArr
+    }
+    
     var secList: [Int] = []
     var minList: [Int] = []
     var hourList: [Int] = []
     var dayList: [String] = []
+    
+    var realHourList: [Int] {
+        var realHourArr: [Int] = []
+        for i in 0..<idList.count {
+            if dayList[i] == "AM" {
+                if hourList[i] == 12 {
+                    realHourArr.append(24)
+                } else {
+                    realHourArr.append(hourList[i])
+                }
+            } else {
+                if hourList[i] == 12 {
+                    realHourArr.append(12)
+                } else {
+                    realHourArr.append(hourList[i] + 12)
+                }
+            }
+        }
+        return realHourArr
+    }
+    
+    var mornList: [String] {
+        var mornArr: [String] = []
+        for i in 0..<idList.count {
+            if realHourList[i] >= 6 && realHourList[i] < 18 {
+                mornArr.append("Morning")
+            } else {
+                mornArr.append("Night")
+            }
+        }
+        return mornArr
+    }
+    
+    var diffList: [Int] {
+        var diffArr: [Int] = []
+        var hourDiff: Int = 0
+        var minDiff: Int = 0
+        var secDiff: Int = 0
+        
+        for i in 0..<idList.count {
+            if i == 0 {
+                diffArr.append(0)
+            } else {
+                hourDiff = (realHourList[i] - realHourList[i-1]) * 3600
+                minDiff = (minList[i] - minList[i-1]) * 60
+                secDiff = secList[i] - secList[i-1]
+                diffArr.append(hourDiff + minDiff + secDiff)
+            }
+        }
+        return diffArr
+    }
     
     var layout: [String] {
         var arr: [String] = []
@@ -36,16 +133,28 @@ struct AlarmList {
         }
         return arr
     }
+    
+    mutating func removeLastAll() {
+        idList.removeLast()
+        secList.removeLast()
+        minList.removeLast()
+        hourList.removeLast()
+        dayList.removeLast()
+    }
 }
 
 
 struct DraggableTransparentForm: View {
-    let dayNightList = ["Light", "Dark"]
+    
+    
+    let modeList = ["Light", "Dark"]
+    let dayNightList = ["AM", "PM"]
     let primList = ["Primary", "Secondary"]
     
     // @Binding var dayNight: String
     @Binding var mode: String
     @Binding var showForm: Bool
+    @Binding var alertBool: Bool
     
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
@@ -58,7 +167,6 @@ struct DraggableTransparentForm: View {
     @State private var min: Int = 0
     @State private var hour: Int = 1
     @State private var day: String = "AM"
-    @State private var primary: String = "Primary"
     
 
     var body: some View {
@@ -68,20 +176,54 @@ struct DraggableTransparentForm: View {
                 .foregroundColor(.gray.opacity(0.8))
                 .padding(5)
             Form {
-                Section("About") {
+                Section {
                     Text("This is your list of alarms. Start setting up your main alarm which is set to the time that you ideally want to wake up. Afterwards, create a number of several alarms in whatever increments you want. These secondary alarms will set off and will prompt you as to whether you have woken up or not. They cannot be deactivated after creation.")
+                } header: {
+                     Text("About")
+                        .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                 }
                 
                 ForEach(0..<alarms.idList.count, id: \.self) { index in // Must use explicit closure parameter index instead of $0
                     Section {
-                        Text(alarms.layout[index])
+                        HStack {
+                            Text(alarms.layout[index])
+                                .font(.system(size: 30, weight: .bold))
+                                .foregroundStyle(Color.white)
+                            Spacer()
+                            ZStack {
+                                Circle()
+                                    .stroke(lineWidth:5)
+                                    .padding(8)
+                                    .foregroundColor(Color.white)
+                                
+                                HandView(length: 60, thickness: 3, color: .white)
+                                    .rotationEffect(.degrees(Double(alarms.secList[index]) * 6), anchor: .center)
+                                
+                                HandView(length: 50, thickness: 6, color: .white)
+                                    .rotationEffect(.degrees(Double(alarms.minList[index]) * 6), anchor: .center)
+                                
+                                HandView(length: 35, thickness: 8, color: .white)
+                                    .rotationEffect(.degrees((Double(alarms.hourList[index]) * 30) + (Double(alarms.minList[index]) / 2)), anchor: .center)
+                            }
+                            .frame(width: 150, height: 150)
+                        }
                     } header: {
                         Text("Alarm \(alarms.idList[index]) (\(alarms.primaryList[index]))")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
                     .transition(.move(edge: .top).combined(with: .opacity))
+                    .listRowBackground(alarms.mornList[index] == "Morning" ?
+                        LinearGradient(gradient: Gradient(colors: [Color.cyan.opacity(0.5), Color.white.opacity(0.5)]),
+                                               startPoint: .top,
+                                               endPoint: .bottom)
+                                       :
+                        LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.5), Color.blue.opacity(0.5)]),
+                                               startPoint: .top,
+                                               endPoint: .bottom)
+                    )
                 }
                 
-                Section("Add new alarm") {
+                Section {
                     Picker("Second", selection: $sec) {
                         ForEach(0..<60, id: \.self) {
                             Text("\($0)")
@@ -103,12 +245,6 @@ struct DraggableTransparentForm: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    Picker("Primary Alarm", selection: $primary) {
-                        ForEach(primList, id: \.self) {
-                            Text(String($0))
-                        }
-                    }
-                    .pickerStyle(.segmented)
                     Button("Add Alarm") {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             alarms.idList.append(alarms.idList.count + 1)
@@ -116,18 +252,28 @@ struct DraggableTransparentForm: View {
                             alarms.minList.append(min)
                             alarms.hourList.append(hour)
                             alarms.dayList.append(day)
-                            alarms.primaryList.append(primary)
+                            
+                            if alarms.idList.count > 1 && (alarms.diffList.last! < 60 || alarms.diffList.last! > 600) {
+                                alarms.removeLastAll()
+                                alertBool = true
+                            }
                         }
                     }
+                } header: {
+                    Text("Add new alarm")
+                        .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                 }
                 
-                Section("Set background") {
+                Section {
                     Picker("Day/Night", selection: $mode) {
-                        ForEach(dayNightList, id: \.self) {
+                        ForEach(modeList, id: \.self) {
                             Text($0)
                         }
                     }
                     .pickerStyle(.segmented)
+                } header: {
+                    Text("Set background")
+                        .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                 }
                 
                 

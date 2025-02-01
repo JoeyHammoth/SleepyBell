@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var selectedDayNight: String = "AM"
     @State private var currentTime: String = ""
     @State private var darkMode: String = "Dark"
+    @State private var alert: Bool = false
     
     
     var body: some View {
@@ -19,10 +20,10 @@ struct ContentView: View {
             DayNightToggleView(isNight: selectedDayNight == "AM" ? false : true)
             
             VStack {
-                Text("Welcome")
-                    .font(.largeTitle)
-                    .padding()
+                Text("SleepyBell")
+                    .font(.system(size: 40, weight: .bold))
                     .foregroundColor(.white)
+                    .padding()
                 
                 Text(currentTime)
                     .font(.system(size: 60))
@@ -49,6 +50,11 @@ struct ContentView: View {
                 .padding()
                 
             }
+            .alert(isPresented: $alert) {
+                Alert(title: Text("Improper Secondary Alarm!"),
+                      message: Text("Please choose a secondary alarm time that is between 1 and 10 minutes more than your last alarm."),
+                      dismissButton: .default(Text("OK")))
+            }
             .onAppear() {
                 startTimer()
             }
@@ -69,7 +75,7 @@ struct ContentView: View {
             
             
             if showForm {
-                DraggableTransparentForm(mode: $darkMode, showForm: $showForm)
+                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert)
             }
         }
     }

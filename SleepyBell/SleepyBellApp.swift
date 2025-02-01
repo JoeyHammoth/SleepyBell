@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct SleepyBellApp: App {
+    let persistentContainer = PersistenceController.shared
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.managedObjectContext, persistentContainer.container.viewContext)
         }
     }
 }
