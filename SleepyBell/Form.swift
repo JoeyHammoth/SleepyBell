@@ -40,11 +40,13 @@ struct AlarmList {
 
 
 struct DraggableTransparentForm: View {
-    let dayNightList = ["AM", "PM"]
+    let dayNightList = ["Light", "Dark"]
     let primList = ["Primary", "Secondary"]
     
-    @Binding var dayNight: String
+    // @Binding var dayNight: String
+    @Binding var mode: String
     @Binding var showForm: Bool
+    
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
@@ -57,6 +59,7 @@ struct DraggableTransparentForm: View {
     @State private var hour: Int = 1
     @State private var day: String = "AM"
     @State private var primary: String = "Primary"
+    
 
     var body: some View {
         VStack {
@@ -119,7 +122,7 @@ struct DraggableTransparentForm: View {
                 }
                 
                 Section("Set background") {
-                    Picker("Day/Night", selection: $dayNight) {
+                    Picker("Day/Night", selection: $mode) {
                         ForEach(dayNightList, id: \.self) {
                             Text($0)
                         }
@@ -131,9 +134,9 @@ struct DraggableTransparentForm: View {
             }
             .scrollContentBackground(.hidden) // Hide form background
         }
-        .frame(height: 500)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.ultraThinMaterial) // Transparent blur effect
-        .cornerRadius(20)
+        .ignoresSafeArea()
         .offset(y: offsetY + dragOffset)  // Combine base offset with drag movement
         .gesture(
             DragGesture()
@@ -141,19 +144,17 @@ struct DraggableTransparentForm: View {
                     dragOffset = gesture.translation.height // Move dynamically
                 }
                 .onEnded { _ in
-                    let newOffset = lastOffset + dragOffset
+                    let newOffset = offsetY + dragOffset
                     
                     if newOffset > 250 {  // Close form if dragged down far
                         withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                            offsetY = 400
+                            offsetY = UIScreen.main.bounds.height
                             showForm = false
                         }
-                        lastOffset = 400
                     } else {  // Snap back up if not dragged far enough
                         withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                            offsetY = 100
+                            offsetY = 0
                         }
-                        lastOffset = 100
                     }
                     
                     dragOffset = 0  // Reset the drag movement
@@ -161,8 +162,18 @@ struct DraggableTransparentForm: View {
         )
         .onAppear {
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                offsetY = 100
-                lastOffset = 100
+                offsetY = 0
+                lastOffset = 0
+            }
+        }
+        .onChange(of: showForm) {
+            if showForm {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    offsetY = 0
+                    lastOffset = 0
+                }
+            } else {
+                offsetY = UIScreen.main.bounds.height
             }
         }
     }

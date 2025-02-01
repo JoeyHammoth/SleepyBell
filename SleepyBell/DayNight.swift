@@ -24,19 +24,37 @@ struct DayNightToggleView: View {
 
 struct DaylightBackgroundView: View {
     @State private var sunPosition: CGFloat = -100
-    
+    @State private var gradientColors: [Color] = [Color.blue, Color.white]
+
     var body: some View {
         ZStack {
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue, Color.white]),
+                gradient: Gradient(colors: gradientColors),
                 startPoint: .top,
                 endPoint: .bottom
             )
             .ignoresSafeArea()
-            
+            .animation(.easeInOut(duration: 3), value: gradientColors) // Smooth transition
+
+        }
+        .onAppear {
+            animateGradient()
+        }
+    }
+
+    func animateGradient() {
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 3)) {
+                if gradientColors == [Color.blue, Color.white] {
+                    gradientColors = [Color.yellow, Color.blue, Color.white] // Simulating noon
+                } else {
+                    gradientColors = [Color.blue, Color.white] // Reset to morning
+                }
+            }
         }
     }
 }
+
 
 struct StarryBackgroundView: View {
     @State private var stars: [Star] = []
