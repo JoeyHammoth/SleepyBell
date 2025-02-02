@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="22G313" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+    <entity name="AlarmListEntity" representedClassName="AlarmListEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="dayList" optional="YES" attributeType="Binary"/>
+        <attribute name="hourList" optional="YES" attributeType="Binary"/>
+        <attribute name="idList" optional="YES" attributeType="Binary"/>
+        <attribute name="minList" optional="YES" attributeType="Binary"/>
+        <attribute name="secList" optional="YES" attributeType="Binary"/>
+    </entity>
+</model>

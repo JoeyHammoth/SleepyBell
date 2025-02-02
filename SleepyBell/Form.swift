@@ -147,8 +147,6 @@ struct AlarmList {
 
 struct DraggableTransparentForm: View {
     
-    
-    let modeList = ["Light", "Dark"]
     let dayNightList = ["AM", "PM"]
     let primList = ["Primary", "Secondary"]
     
@@ -156,6 +154,7 @@ struct DraggableTransparentForm: View {
     @Binding var mode: String
     @Binding var showForm: Bool
     @Binding var alertBool: Bool
+    
     @Binding var alarms: AlarmList
     
     
@@ -170,6 +169,32 @@ struct DraggableTransparentForm: View {
     @State private var hour: Int = 1
     @State private var day: String = "AM"
     
+    @State private var mornGradColors: [Color] = [Color.cyan, Color.white]
+    @State private var nightGradColors: [Color] = [Color.black.opacity(0.5), Color.blue.opacity(0.5)]
+    
+    func animateGradientMorn() {
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 3)) {
+                if mornGradColors == [Color.cyan, Color.white] {
+                    mornGradColors = [Color.yellow, Color.cyan, Color.white] // Simulating noon
+                } else {
+                    mornGradColors = [Color.cyan, Color.white] // Reset to morning
+                }
+            }
+        }
+    }
+    
+    func animateGradientNight() {
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 3)) {
+                if nightGradColors == [Color.black.opacity(0.5), Color.blue.opacity(0.5)] {
+                    nightGradColors = [Color.black.opacity(0.8), Color.blue.opacity(0.2)] // Simulating night
+                } else {
+                    nightGradColors = [Color.black.opacity(0.5), Color.blue.opacity(0.5)] // Reset to evening
+                }
+            }
+        }
+    }
 
     var body: some View {
         VStack {
@@ -228,14 +253,20 @@ struct DraggableTransparentForm: View {
                         }
                         .transition(.move(edge: .top).combined(with: .opacity))
                         .listRowBackground(alarms.mornList[index] == "Morning" ?
-                                           LinearGradient(gradient: Gradient(colors: [Color.cyan.opacity(0.5), Color.white.opacity(0.5)]),
+                                           LinearGradient(gradient: Gradient(colors: mornGradColors),
                                                           startPoint: .top,
                                                           endPoint: .bottom)
+                                            .animation(.easeInOut(duration: 3), value: mornGradColors)
                                            :
-                                            LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.5), Color.blue.opacity(0.5)]),
+                                            LinearGradient(gradient: Gradient(colors: nightGradColors),
                                                            startPoint: .top,
                                                            endPoint: .bottom)
+                                            .animation(.easeInOut(duration: 3), value: nightGradColors)
                         )
+                    }
+                    .onAppear {
+                        animateGradientMorn()
+                        animateGradientNight()
                     }
                     
                     Section {
@@ -271,23 +302,13 @@ struct DraggableTransparentForm: View {
                                 if alarms.idList.count > 1 && (alarms.diffList.last! < 60 || alarms.diffList.last! > 600) {
                                     alarms.removeLastAll()
                                     alertBool = true
+                                } else {
+                                    PersistenceController.shared.saveAlarmList(alarms: alarms)
                                 }
                             }
                         }
                     } header: {
                         Text("Add new alarm")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
-                    }
-                    
-                    Section {
-                        Picker("Day/Night", selection: $mode) {
-                            ForEach(modeList, id: \.self) {
-                                Text($0)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                    } header: {
-                        Text("Set background")
                             .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
                     

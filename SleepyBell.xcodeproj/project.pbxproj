@@ -11,13 +11,13 @@
 		346A7D412D4D069B00FA0948 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346A7D402D4D069B00FA0948 /* ContentView.swift */; };
 		346A7D432D4D069E00FA0948 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346A7D422D4D069E00FA0948 /* Assets.xcassets */; };
 		346A7D462D4D069E00FA0948 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */; };
-		34A5DCA12D4E151E00882C90 /* Controller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5DCA02D4E151E00882C90 /* Controller.swift */; };
 		34A5DCA32D4E8EC000882C90 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5DCA22D4E8EC000882C90 /* Settings.swift */; };
-		34A5DCA62D4E974600882C90 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCA52D4E974600882C90 /* SwiftUIIntrospect */; };
-		34A5DCA82D4E974600882C90 /* SwiftUIIntrospect-Dynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCA72D4E974600882C90 /* SwiftUIIntrospect-Dynamic */; };
-		34A5DCAA2D4E974600882C90 /* SwiftUIIntrospect-Static in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCA92D4E974600882C90 /* SwiftUIIntrospect-Static */; };
+		34A5DCAD2D4E9E5B00882C90 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCAC2D4E9E5B00882C90 /* SwiftUIIntrospect */; settings = {ATTRIBUTES = (Required, ); }; };
+		34A5DCAF2D4EA3D500882C90 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCAE2D4EA3D500882C90 /* SwiftUIIntrospect */; };
 		34A919C42D4D1D5F000E13F3 /* DayNight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A919C32D4D1D5F000E13F3 /* DayNight.swift */; };
 		34A919C62D4D1DC7000E13F3 /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A919C52D4D1DC7000E13F3 /* Form.swift */; };
+		34AD846D2D4FED8F0081B262 /* Database.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 34AD846B2D4FED8F0081B262 /* Database.xcdatamodeld */; };
+		34AD846F2D4FEECC0081B262 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AD846E2D4FEECC0081B262 /* Data.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,10 +26,11 @@
 		346A7D402D4D069B00FA0948 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		346A7D422D4D069E00FA0948 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		34A5DCA02D4E151E00882C90 /* Controller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controller.swift; sourceTree = "<group>"; };
 		34A5DCA22D4E8EC000882C90 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		34A919C32D4D1D5F000E13F3 /* DayNight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayNight.swift; sourceTree = "<group>"; };
 		34A919C52D4D1DC7000E13F3 /* Form.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
+		34AD846C2D4FED8F0081B262 /* Database.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Database.xcdatamodel; sourceTree = "<group>"; };
+		34AD846E2D4FEECC0081B262 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,9 +38,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				34A5DCA62D4E974600882C90 /* SwiftUIIntrospect in Frameworks */,
-				34A5DCA82D4E974600882C90 /* SwiftUIIntrospect-Dynamic in Frameworks */,
-				34A5DCAA2D4E974600882C90 /* SwiftUIIntrospect-Static in Frameworks */,
+				34A5DCAD2D4E9E5B00882C90 /* SwiftUIIntrospect in Frameworks */,
+				34A5DCAF2D4EA3D500882C90 /* SwiftUIIntrospect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +72,8 @@
 				346A7D442D4D069E00FA0948 /* Preview Content */,
 				34A919C32D4D1D5F000E13F3 /* DayNight.swift */,
 				34A919C52D4D1DC7000E13F3 /* Form.swift */,
-				34A5DCA02D4E151E00882C90 /* Controller.swift */,
+				34AD846B2D4FED8F0081B262 /* Database.xcdatamodeld */,
+				34AD846E2D4FEECC0081B262 /* Data.swift */,
 			);
 			path = SleepyBell;
 			sourceTree = "<group>";
@@ -102,9 +103,8 @@
 			);
 			name = SleepyBell;
 			packageProductDependencies = (
-				34A5DCA52D4E974600882C90 /* SwiftUIIntrospect */,
-				34A5DCA72D4E974600882C90 /* SwiftUIIntrospect-Dynamic */,
-				34A5DCA92D4E974600882C90 /* SwiftUIIntrospect-Static */,
+				34A5DCAC2D4E9E5B00882C90 /* SwiftUIIntrospect */,
+				34A5DCAE2D4EA3D500882C90 /* SwiftUIIntrospect */,
 			);
 			productName = SleepyBell;
 			productReference = 346A7D3B2D4D069B00FA0948 /* SleepyBell.app */;
@@ -135,7 +135,7 @@
 			);
 			mainGroup = 346A7D322D4D069A00FA0948;
 			packageReferences = (
-				34A5DCA42D4E974600882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+				34A5DCAB2D4E9E5B00882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 346A7D3C2D4D069B00FA0948 /* Products */;
 			projectDirPath = "";
@@ -163,12 +163,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				34AD846D2D4FED8F0081B262 /* Database.xcdatamodeld in Sources */,
 				34A5DCA32D4E8EC000882C90 /* Settings.swift in Sources */,
-				34A5DCA12D4E151E00882C90 /* Controller.swift in Sources */,
 				346A7D412D4D069B00FA0948 /* ContentView.swift in Sources */,
 				34A919C62D4D1DC7000E13F3 /* Form.swift in Sources */,
 				34A919C42D4D1D5F000E13F3 /* DayNight.swift in Sources */,
 				346A7D3F2D4D069B00FA0948 /* SleepyBellApp.swift in Sources */,
+				34AD846F2D4FEECC0081B262 /* Data.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,7 +377,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		34A5DCA42D4E974600882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+		34A5DCAB2D4E9E5B00882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
 			requirement = {
@@ -387,22 +388,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		34A5DCA52D4E974600882C90 /* SwiftUIIntrospect */ = {
+		34A5DCAC2D4E9E5B00882C90 /* SwiftUIIntrospect */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 34A5DCA42D4E974600882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			package = 34A5DCAB2D4E9E5B00882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
 			productName = SwiftUIIntrospect;
 		};
-		34A5DCA72D4E974600882C90 /* SwiftUIIntrospect-Dynamic */ = {
+		34A5DCAE2D4EA3D500882C90 /* SwiftUIIntrospect */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 34A5DCA42D4E974600882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = "SwiftUIIntrospect-Dynamic";
-		};
-		34A5DCA92D4E974600882C90 /* SwiftUIIntrospect-Static */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 34A5DCA42D4E974600882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = "SwiftUIIntrospect-Static";
+			package = 34A5DCAB2D4E9E5B00882C90 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = SwiftUIIntrospect;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		34AD846B2D4FED8F0081B262 /* Database.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				34AD846C2D4FED8F0081B262 /* Database.xcdatamodel */,
+			);
+			currentVersion = 34AD846C2D4FED8F0081B262 /* Database.xcdatamodel */;
+			path = Database.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 346A7D332D4D069A00FA0948 /* Project object */;
 }

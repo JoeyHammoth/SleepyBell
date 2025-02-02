@@ -10,8 +10,11 @@ import SwiftUI
 
 struct Settings: View {
     
+    let modeList = ["Light", "Dark"]
+    
     @Binding var starAmount: Int
     @Binding var showForm: Bool
+    @Binding var mode: String
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
@@ -39,8 +42,22 @@ struct Settings: View {
                         .padding()
                         Text("Number of stars: \(starAmount)")
                     } header: {
-                        Text("Set Star Count")
+                        Text("Set Star Count (Night Only)")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
+                    
+                    Section {
+                        Picker("Day/Night", selection: $mode) {
+                            ForEach(modeList, id: \.self) {
+                                Text($0)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    } header: {
+                        Text("Set background")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                    }
+                    
                 }
                 .navigationTitle("Settings")
                 .scrollContentBackground(.hidden) // Hide form background

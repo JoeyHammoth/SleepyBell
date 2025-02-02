@@ -15,7 +15,7 @@ struct ContentView: View {
     @State private var currentTime: String = ""
     @State private var darkMode: String = "Dark"
     @State private var alert: Bool = false
-    @State private var alarmArr: AlarmList = AlarmList()
+    @State private var alarmArr: AlarmList = fetchLatestAlarm()
     
     
     var body: some View {
@@ -78,9 +78,9 @@ struct ContentView: View {
             .onAppear() {
                 startTimer()
             }
-            .onChange(of: darkMode) { newValue in
+            .onChange(of: darkMode) {
                 // Switch the color scheme based on darkMode state
-                if newValue == "Dark" {
+                if darkMode == "Dark" {
                     // Use UIWindowScene to change the user interface style for iOS 15+
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                         windowScene.windows.first?.rootViewController?.overrideUserInterfaceStyle = .dark
@@ -99,7 +99,7 @@ struct ContentView: View {
             }
             
             if showSettings {
-                Settings(starAmount: $starNum, showForm: $showSettings)
+                Settings(starAmount: $starNum, showForm: $showSettings, mode: $darkMode)
             }
         }
     }

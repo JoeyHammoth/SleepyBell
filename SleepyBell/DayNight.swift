@@ -80,7 +80,7 @@ struct StarryBackgroundView: View {
                 generateStars(in: geometry.size)
                 animateStars()
             }
-            .onChange(of: starCount) { _ in
+            .onChange(of: starCount) {
                 generateStars(in: geometry.size)
             }
         }
