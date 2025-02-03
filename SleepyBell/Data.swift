@@ -8,7 +8,7 @@
 import CoreData
 
 
-extension AlarmListEntity {
+extension AlarmListEntity { // Extension computed variables to convert between arrays and binary data in the core database
     var idArray: [Int] {
         get {
             guard let data = idList else { return [] }
@@ -62,7 +62,7 @@ extension AlarmListEntity {
 }
 
 
-class PersistenceController {
+class PersistenceController { // Persistence controller to load database and save stuff inside it
     
     static let shared = PersistenceController()
     
@@ -95,7 +95,7 @@ class PersistenceController {
     }
 }
 
-func fetchAlarmList() -> [AlarmList] {
+func fetchAlarmList() -> [AlarmList] { // For fetching stuff from the database
     let context = PersistenceController.shared.container.viewContext
     let fetchRequest: NSFetchRequest<AlarmListEntity> = AlarmListEntity.fetchRequest()
     

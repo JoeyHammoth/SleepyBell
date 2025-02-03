@@ -94,7 +94,7 @@ struct AlarmList {
         return mornArr
     }
     
-    var diffList: [Int] {
+    var diffList: [Int] { //TODO: fix the potential of 24 - 1 (12AM to 1AM)
         var diffArr: [Int] = []
         var hourDiff: Int = 0
         var minDiff: Int = 0
