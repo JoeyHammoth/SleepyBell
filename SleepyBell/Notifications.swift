@@ -11,16 +11,24 @@ import UserNotifications
 
 func requestNotificationPermission() {
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-        if granted {
-            print("Permission granted")
-        } else {
-            print("Permission denied")
+        DispatchQueue.main.async {
+            if let error = error {
+                print("Error requesting permission: \(error.localizedDescription)")
+            } else {
+                print("Permission granted: \(granted)")
+                // Re-check permission after requesting
+                UNUserNotificationCenter.current().getNotificationSettings { settings in
+                    DispatchQueue.main.async {
+                        print("New permission status: \(settings.authorizationStatus.rawValue)")
+                    }
+                }
+            }
         }
     }
 }
 
 
-func scheduleNotification(alarms: AlarmList, index: Int) {
+func scheduleNotification(id: String, alarms: AlarmList, index: Int) {
     let content = UNMutableNotificationContent()
     content.title = "Alarm"
     content.body = "Time to wake up!"
@@ -43,7 +51,7 @@ func scheduleNotification(alarms: AlarmList, index: Int) {
 
     let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
 
-    let request = UNNotificationRequest(identifier: "alarmNotification", content: content, trigger: trigger)
+    let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
 
     UNUserNotificationCenter.current().add(request) { error in
         if let error = error {
@@ -58,7 +66,6 @@ func scheduleNotification(alarms: AlarmList, index: Int) {
 
 struct Notifications: View {
     
-    @Binding var starAmount: Int
     @Binding var showForm: Bool
     @Binding var mode: String
     
@@ -66,14 +73,14 @@ struct Notifications: View {
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
     @State private var dragOffset: CGFloat = 0 // Track user movement
     
-    private var notificationList: [String] {
-        var notiList: [String] = []
+    @State private var notificationList: [String] = []
+    
+    func fetchNotifications() {
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-            for request in requests {
-                notiList.append("\(request.identifier)")
+            DispatchQueue.main.async {
+                self.notificationList = requests.map { $0.identifier }
             }
         }
-        return notiList
     }
 
     var body: some View {
@@ -84,6 +91,9 @@ struct Notifications: View {
                 .padding(5)
             NavigationStack {
                 Form {
+                    Section {
+                        Text(notificationList.isEmpty ? "No notifications" : notificationList.joined(separator: ", "))
+                    }
                     ForEach(notificationList, id: \.self) { noti in
                         Section {
                             VStack {
@@ -94,6 +104,7 @@ struct Notifications: View {
                                 
                                 Button(action: {
                                     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [noti])
+                                    fetchNotifications()
                                 }) {
                                     Image(systemName: "trash.fill") // Use a system image for the alarm icon
                                         .resizable()
@@ -106,6 +117,9 @@ struct Notifications: View {
                                 }
                                 .padding()
                             }
+                        } header: {
+                            Text("Alarm \(noti)")
+                                .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                         }
                     }
                 }
@@ -149,6 +163,7 @@ struct Notifications: View {
                 offsetY = 0
                 lastOffset = 0
             }
+            fetchNotifications()
         }
         .onChange(of: showForm) {
             if showForm {

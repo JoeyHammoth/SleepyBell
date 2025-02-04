@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var starNum: Int = 100
+    @State private var showNotifications = false
     @State private var showSettings = false
     @State private var showForm = false
     @State private var selectedDayNight: String = "AM"
@@ -67,6 +68,21 @@ struct ContentView: View {
                             .shadow(radius: 5)
                     }
                     .padding()
+                    Button(action: {
+                        withAnimation {
+                            showNotifications.toggle()
+                        }
+                    }) {
+                        Image(systemName: "bell.fill") // Use a system image for the alarm icon
+                            .resizable()
+                            .frame(width: 24, height: 24) // Set the size of the icon
+                            .foregroundColor(.black) // Set the icon color
+                            .padding()
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(Capsule())
+                            .shadow(radius: 5)
+                    }
+                    .padding()
                 }
                 
             }
@@ -101,6 +117,13 @@ struct ContentView: View {
             if showSettings {
                 Settings(starAmount: $starNum, showForm: $showSettings, mode: $darkMode)
             }
+            
+            if showNotifications {
+                Notifications(showForm: $showNotifications, mode: $darkMode)
+            }
+        }
+        .onAppear() {
+            requestNotificationPermission()
         }
     }
     

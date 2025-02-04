@@ -94,7 +94,7 @@ struct AlarmList {
         return mornArr
     }
     
-    var diffList: [Int] { //TODO: fix the potential of 24 - 1 (12AM to 1AM)
+    var diffList: [Int] {
         var diffArr: [Int] = []
         var hourDiff: Int = 0
         var minDiff: Int = 0
@@ -104,7 +104,11 @@ struct AlarmList {
             if i == 0 {
                 diffArr.append(0)
             } else {
-                hourDiff = (realHourList[i] - realHourList[i-1]) * 3600
+                if realHourList[i-1] == 24 {
+                    hourDiff = (realHourList[i] - 0) * 3600
+                } else {
+                    hourDiff = (realHourList[i] - realHourList[i-1]) * 3600
+                }
                 minDiff = (minList[i] - minList[i-1]) * 60
                 secDiff = secList[i] - secList[i-1]
                 diffArr.append(hourDiff + minDiff + secDiff)
@@ -304,6 +308,7 @@ struct DraggableTransparentForm: View {
                                     alertBool = true
                                 } else {
                                     PersistenceController.shared.saveAlarmList(alarms: alarms)
+                                    scheduleNotification(id: alarms.layout.last!, alarms: alarms, index: alarms.idList.count - 1)
                                 }
                             }
                         }
