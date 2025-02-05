@@ -146,6 +146,14 @@ struct AlarmList {
         hourList.removeLast()
         dayList.removeLast()
     }
+    
+    mutating func removeEverything() {
+        idList.removeAll()
+        secList.removeAll()
+        minList.removeAll()
+        hourList.removeAll()
+        dayList.removeAll()
+    }
 }
 
 
@@ -317,6 +325,18 @@ struct DraggableTransparentForm: View {
                             .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
                     
+                    Section {
+                        Button("Delete Alarms") {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                alarms.removeEverything()
+                            }
+                            PersistenceController.shared.deleteAll()
+                        }
+                        .foregroundStyle(Color.red)
+                    } header: {
+                        Text("Remove all alarms")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                    }
                     
                 }
                 .navigationTitle("Alarms")

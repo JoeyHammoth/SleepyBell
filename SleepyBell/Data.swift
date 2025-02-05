@@ -93,6 +93,25 @@ class PersistenceController { // Persistence controller to load database and sav
             print("Failed to save user: \(error)")
         }
     }
+    
+    func deleteAll() {
+        let persistentContainer = PersistenceController.shared.container
+
+        guard let storeURL = persistentContainer.persistentStoreDescriptions.first?.url else {
+            print("Persistent store URL not found.")
+            return
+        }
+
+        let coordinator = persistentContainer.persistentStoreCoordinator
+
+        do {
+            try coordinator.destroyPersistentStore(at: storeURL, ofType: NSSQLiteStoreType, options: nil)
+            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
+            print("Core Data store reset successfully.")
+        } catch {
+            print("Failed to reset Core Data: \(error)")
+        }
+    }
 }
 
 func fetchAlarmList() -> [AlarmList] { // For fetching stuff from the database
