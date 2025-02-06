@@ -73,6 +73,37 @@ extension NotificationEntity {
     }
 }
 
+extension StatisticsEntity {
+    var wakeArray: [String] {
+        get {
+            guard let data = wokenList else { return [] }
+            return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        }
+        set {
+            wokenList = try? JSONEncoder().encode(newValue)
+        }
+    }
+    
+    var sleepArray: [String] {
+        get {
+            guard let data = sleepingList else { return [] }
+            return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        }
+        set {
+            sleepingList = try? JSONEncoder().encode(newValue)
+        }
+    }
+    
+    var alarmModesDict: [String:Int] {
+        get {
+            guard let data = modeDict else { return [:] }
+            return (try? JSONDecoder().decode([String:Int].self, from: data)) ?? [:]
+        }
+        set {
+            modeDict = try? JSONEncoder().encode(newValue)
+        }
+    }
+}
 
 class PersistenceController { // Persistence controller to load database and save stuff inside it
     
@@ -111,6 +142,21 @@ class PersistenceController { // Persistence controller to load database and sav
         let notiEntity = NotificationEntity(context: context)
         
         notiEntity.soundTitleDict = soundDict
+        
+        do {
+            try context.save()  // Save to Core Data
+        } catch {
+            print("Failed to save user: \(error)")
+        }
+    }
+    
+    func saveStats(sleepList: [String], wakingList: [String], modesDict: [String:Int]) {
+        let context = container.viewContext
+        let statEntity = StatisticsEntity(context: context)
+        
+        statEntity.wakeArray = wakingList
+        statEntity.sleepArray = sleepList
+        statEntity.alarmModesDict = modesDict
         
         do {
             try context.save()  // Save to Core Data
@@ -160,7 +206,46 @@ func fetchSoundList() -> [[String:String]] { // For fetching stuff from the data
         let NotificationEntities = try context.fetch(fetchRequest)
         return NotificationEntities.map { $0.soundTitleDict }
     } catch {
-        print("Failed to fetch users: \(error)")
+        print("Failed to fetch notifications: \(error)")
+        return []
+    }
+}
+
+func fetchAlarmWakeList() -> [[String]] {
+    let context = PersistenceController.shared.container.viewContext
+    let fetchRequest: NSFetchRequest<StatisticsEntity> = StatisticsEntity.fetchRequest()
+    
+    do {
+        let StatEntities = try context.fetch(fetchRequest)
+        return StatEntities.map { $0.wakeArray }
+    } catch {
+        print("Failed to fetch wakes: \(error)")
+        return []
+    }
+}
+
+func fetchAlarmSleepList() -> [[String]] {
+    let context = PersistenceController.shared.container.viewContext
+    let fetchRequest: NSFetchRequest<StatisticsEntity> = StatisticsEntity.fetchRequest()
+    
+    do {
+        let StatEntities = try context.fetch(fetchRequest)
+        return StatEntities.map { $0.sleepArray }
+    } catch {
+        print("Failed to fetch sleeps: \(error)")
+        return []
+    }
+}
+
+func fetchAlarmModeList() -> [[String:Int]] {
+    let context = PersistenceController.shared.container.viewContext
+    let fetchRequest: NSFetchRequest<StatisticsEntity> = StatisticsEntity.fetchRequest()
+    
+    do {
+        let StatEntities = try context.fetch(fetchRequest)
+        return StatEntities.map { $0.alarmModesDict }
+    } catch {
+        print("Failed to fetch modes: \(error)")
         return []
     }
 }
@@ -178,5 +263,29 @@ func fetchLatestSoundDict() -> [String:String] {
         return [:]
     } else {
         return fetchSoundList().last!
+    }
+}
+
+func fetchLatestAlarmWakeList() -> [String] {
+    if fetchAlarmWakeList().count == 0 {
+        return []
+    } else {
+        return fetchAlarmWakeList().last!
+    }
+}
+
+func fetchLatestAlarmSleepList() -> [String] {
+    if fetchAlarmSleepList().count == 0 {
+        return []
+    } else {
+        return fetchAlarmSleepList().last!
+    }
+}
+
+func fetchLatestAlarmModeList() -> [String:Int] {
+    if fetchAlarmModeList().count == 0 {
+        return [:]
+    } else {
+        return fetchAlarmModeList().last!
     }
 }

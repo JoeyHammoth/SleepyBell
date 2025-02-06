@@ -70,6 +70,7 @@ struct Notifications: View {
     @Binding var showForm: Bool
     @Binding var mode: String
     @Binding var soundDict: [String:String]
+    @Binding var occurencesDict: [String:Int]
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
@@ -141,6 +142,11 @@ struct Notifications: View {
                                             .shadow(radius: 5)
                                     }
                                     Spacer()
+                                    if occurencesDict[noti] != nil {
+                                        Text("Triggers: \(occurencesDict[noti]!)")
+                                    } else {
+                                        Text("Triggers: 0")
+                                    }
                                 }
                                 .padding([.leading, .trailing])
                             }

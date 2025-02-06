@@ -140,6 +140,7 @@ struct AlarmList {
         return arr
     }
     
+    
     mutating func removeLastAll() {
         idList.removeLast()
         secList.removeLast()

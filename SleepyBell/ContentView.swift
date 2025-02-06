@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+// For changing fonts
+struct GlobalFontModifier: ViewModifier {
+    let fontString: String
+    let fSize: CGFloat
+    func body(content: Content) -> some View {
+        content.font(.custom(fontString, size: fSize))
+    }
+}
+
+extension View {
+    func globalFont(font: String, fontSize: CGFloat) -> some View {
+        self.modifier(GlobalFontModifier(fontString: font, fSize: fontSize))
+    }
+}
+
 struct ContentView: View {
     @State private var starNum: Int = 100
     @State private var showNotifications = false
@@ -20,6 +35,15 @@ struct ContentView: View {
     @State private var soundHM: [String:String] = fetchLatestSoundDict()
     
     @State private var clearAlert: Bool = false
+    @State private var notiAlertBool: Bool = false
+    @State private var notiAlertCurr: String = ""
+    
+    @State private var wokeTimeList: [String] = fetchLatestAlarmWakeList()
+    @State private var sleepTimeList: [String] = fetchLatestAlarmSleepList()
+    @State private var alarmModeDict: [String:Int] = fetchLatestAlarmModeList()
+    
+    @State private var selectedFont: String = "Helvetica Neue"
+    @State private var selectedFontSize: CGFloat = 0
     
     var body: some View {
         ZStack {
@@ -86,13 +110,14 @@ struct ContentView: View {
                     }
                     .padding()
                 }
-                
             }
+            // alert for wrong alarm
             .alert(isPresented: $alert) {
                 Alert(title: Text("Improper Secondary Alarm!"),
                       message: Text("Please choose a secondary alarm time that is between 1 and 10 minutes more than your last alarm."),
                       dismissButton: .default(Text("OK")))
             }
+            // alert for removing all alarms
             .alert("Warning", isPresented: $clearAlert) {
                 Button("Yes") {
                     withAnimation(.easeInOut(duration: 0.3)) {
@@ -108,6 +133,32 @@ struct ContentView: View {
                 }
             } message: {
                 Text("Deleting everything means deleting all alarms, scheduled notifications and sleep data. Are you sure you want to do this?")
+            }
+            // notification alerts
+            .alert("Alarm is Off!", isPresented: $notiAlertBool) {
+                var wokeTimeListCpy = wokeTimeList
+                var alarmModeDictCpy = alarmModeDict
+                var sleepTimeListCpy = sleepTimeList
+                Button("Yes") {
+                    wokeTimeListCpy.append(notiAlertCurr)
+                    if alarmModeDictCpy[notiAlertCurr] != nil {
+                        alarmModeDictCpy[notiAlertCurr] = alarmModeDictCpy[notiAlertCurr]! + 1
+                    } else {
+                        alarmModeDictCpy[notiAlertCurr] = 1
+                    }
+                    PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy)
+                }
+                Button("No") {
+                    sleepTimeListCpy.append(notiAlertCurr)
+                    if alarmModeDictCpy[notiAlertCurr] != nil {
+                        alarmModeDictCpy[notiAlertCurr] = alarmModeDictCpy[notiAlertCurr]! + 1
+                    } else {
+                        alarmModeDictCpy[notiAlertCurr] = 1
+                    }
+                    PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy)
+                }
+            } message: {
+                Text("This is the alarm for \(notiAlertCurr). Did you wake up?")
             }
             .onAppear() {
                 startTimer()
@@ -133,11 +184,11 @@ struct ContentView: View {
             }
             
             if showSettings {
-                Settings(starAmount: $starNum, showForm: $showSettings, mode: $darkMode)
+                Settings(starAmount: $starNum, showForm: $showSettings, mode: $darkMode, font: $selectedFont)
             }
             
             if showNotifications {
-                Notifications(showForm: $showNotifications, mode: $darkMode, soundDict: $soundHM)
+                Notifications(showForm: $showNotifications, mode: $darkMode, soundDict: $soundHM, occurencesDict: $alarmModeDict)
             }
         }
         .onAppear() {
@@ -149,6 +200,25 @@ struct ContentView: View {
         // Update the current time every second
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             updateCurrentTime()
+            
+            // Used for triggering notification alerts
+            let now = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
+            for i in 0..<alarmArr.idList.count {
+                var realHour: Int {
+                    if alarmArr.realHourList[i] == 24 {
+                        return 0
+                    } else {
+                        return alarmArr.realHourList[i]
+                    }
+                }
+                if realHour == now.hour &&
+                    alarmArr.minList[i] == now.minute &&
+                    alarmArr.secList[i] == now.second {
+                    notiAlertBool = true
+                    notiAlertCurr = alarmArr.layout[i]
+                    break
+                }
+            }
         }
     }
     

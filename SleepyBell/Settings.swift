@@ -11,10 +11,12 @@ import SwiftUI
 struct Settings: View {
     
     let modeList = ["Light", "Dark"]
+    let fontList = ["Helvetica Neue"]
     
     @Binding var starAmount: Int
     @Binding var showForm: Bool
     @Binding var mode: String
+    @Binding var font: String
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
@@ -55,6 +57,17 @@ struct Settings: View {
                         .pickerStyle(.segmented)
                     } header: {
                         Text("Set background")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                    }
+                    
+                    Section {
+                        Picker("Font", selection: $font) {
+                            ForEach(fontList, id: \.self) {
+                                Text($0)
+                            }
+                        }
+                    } header: {
+                        Text("Set Fonts")
                             .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
                     
