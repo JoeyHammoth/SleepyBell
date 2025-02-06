@@ -28,13 +28,13 @@ func requestNotificationPermission() {
 }
 
 
-func scheduleNotification(id: String, alarms: AlarmList, index: Int) {
+func scheduleNotification(id: String, alarms: AlarmList, index: Int, filename: String, soundList: inout [String]) { // inout to be able to modify soundlist
     let content = UNMutableNotificationContent()
     content.title = "Alarm"
     content.body = "Time to wake up!"
-    content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "sound.wav"))
+    content.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: filename))
+    soundList.append(filename)
 
-    // Set the desired time (e.g., 8:00 AM)
     var dateComponents = DateComponents()
     
     var realHour: Int {
@@ -68,17 +68,36 @@ struct Notifications: View {
     
     @Binding var showForm: Bool
     @Binding var mode: String
+    @Binding var soundArr: [String]
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
     @State private var dragOffset: CGFloat = 0 // Track user movement
     
     @State private var notificationList: [String] = []
+    @State private var soundTitleList: [String:String] = [:]
+    
+    @State private var gradColors: [Color] = [Color.red, Color.white]
     
     func fetchNotifications() {
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
             DispatchQueue.main.async {
                 self.notificationList = requests.map { $0.identifier }
+                self.soundTitleList = requests.reduce(into: [:]) { result, request in
+                    result[request.identifier] = request.content.sound?.accessibilityTextualContext?.rawValue
+                }
+            }
+        }
+    }
+    
+    func animateGradient() {
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 3)) {
+                if gradColors == [Color.red, Color.white] {
+                    gradColors = [Color.pink, Color.white] // Simulating noon
+                } else {
+                    gradColors = [Color.red, Color.white] // Reset to morning
+                }
             }
         }
     }
@@ -90,25 +109,32 @@ struct Notifications: View {
                 .foregroundColor(.gray.opacity(0.8))
                 .padding(5)
             NavigationStack {
+                Text("\(soundArr.description)")
                 Form {
                     Section {
-                        Text(notificationList.isEmpty ? "No notifications" : notificationList.joined(separator: ", "))
+                        Text("Here is a list of all sheduled notification alarms. Modify them at your own discretion.")
+                    } header: {
+                        Text("About")
+                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                     }
-                    ForEach(notificationList, id: \.self) { noti in
+                    ForEach(Array(zip(notificationList, soundArr)), id: \.0) { (noti, sound) in
                         Section {
                             VStack {
-                                Text(noti) // TODO: replace the id with notification datetime component
-                                    .font(.system(size: 30, weight: .bold))
+                                Text(noti) 
+                                    .font(.system(size: 40, weight: .bold))
                                     .foregroundStyle(Color.white)
                                     .padding()
-                                
+                                Text("Sound: \(sound)")
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundStyle(Color.white)
+                                    .padding()
                                 Button(action: {
                                     UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [noti])
                                     fetchNotifications()
                                 }) {
                                     Image(systemName: "trash.fill") // Use a system image for the alarm icon
                                         .resizable()
-                                        .frame(width: 30, height: 24) // Set the size of the icon
+                                        .frame(width: 24, height: 24) // Set the size of the icon
                                         .foregroundColor(.black) // Set the icon color
                                         .padding()
                                         .background(Color.white.opacity(0.8))
@@ -118,9 +144,18 @@ struct Notifications: View {
                                 .padding()
                             }
                         } header: {
-                            Text("Alarm \(noti)")
+                            Text("Notification \(noti)")
                                 .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
                         }
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .listRowBackground(LinearGradient(gradient: Gradient(colors: gradColors),
+                                                          startPoint: .top,
+                                                          endPoint: .bottom)
+                                            .animation(.easeInOut(duration: 3), value: gradColors)
+                        )
+                    }
+                    .onAppear {
+                        animateGradient()
                     }
                 }
                 .navigationTitle("Notifications")

@@ -7,6 +7,7 @@
 
 import SwiftUI
 @_spi(Advanced) import SwiftUIIntrospect
+import AVFoundation
 
 struct HandView: View {
     
@@ -161,13 +162,15 @@ struct DraggableTransparentForm: View {
     
     let dayNightList = ["AM", "PM"]
     let primList = ["Primary", "Secondary"]
+    let soundList = ["lottery", "alert", "classic", "morning", "rooster"]
     
     // @Binding var dayNight: String
     @Binding var mode: String
     @Binding var showForm: Bool
     @Binding var alertBool: Bool
-    
     @Binding var alarms: AlarmList
+    @Binding var clearAlertBool: Bool
+    @Binding var soundArr: [String]
     
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
@@ -180,9 +183,17 @@ struct DraggableTransparentForm: View {
     @State private var min: Int = 0
     @State private var hour: Int = 1
     @State private var day: String = "AM"
+    @State private var sound: String = "lottery"
     
     @State private var mornGradColors: [Color] = [Color.cyan, Color.white]
     @State private var nightGradColors: [Color] = [Color.black.opacity(0.5), Color.blue.opacity(0.5)]
+    
+    // For audio player
+    @State private var audioPlayer: AVAudioPlayer?
+    @State private var isPlaying = false
+    @State private var currentTime: TimeInterval = 0
+    @State private var duration: TimeInterval = 1
+    @State private var timer: Timer?
     
     func animateGradientMorn() {
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
@@ -206,6 +217,84 @@ struct DraggableTransparentForm: View {
                 }
             }
         }
+    }
+    
+    // MARK: - Setup Audio
+    func setupAudio(filename: String) {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "wav") else {
+            print("Audio file not found")
+            return
+        }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.prepareToPlay()
+            duration = audioPlayer?.duration ?? 1
+            currentTime = 0
+            
+            // Stop previous playback when switching sounds
+            isPlaying = false
+            stopTimer()
+            
+            // Set up audio session for physical devices
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+        } catch {
+            print("Error loading audio: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Play & Stop Functions
+    func playSound() {
+        guard let player = audioPlayer else { return }
+        if isPlaying {
+            player.pause()
+            stopTimer()
+        } else {
+            player.play()
+            startTimer()
+        }
+        isPlaying.toggle()
+    }
+
+    func stopSound() {
+        guard let player = audioPlayer else { return }
+        player.stop()
+        player.currentTime = 0
+        currentTime = 0
+        isPlaying = false
+        stopTimer()
+    }
+
+    // MARK: - Seek to Time
+    func seekToTime(_ time: TimeInterval) {
+        guard let player = audioPlayer else { return }
+        player.currentTime = time
+        if isPlaying {
+            player.play()
+        }
+    }
+
+    // MARK: - Timer for Progress Updates
+    func startTimer() {
+        stopTimer()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            if let player = audioPlayer {
+                currentTime = player.currentTime
+            }
+        }
+    }
+
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    // MARK: - Format Time
+    func formatTime(_ time: TimeInterval) -> String {
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
     }
 
     var body: some View {
@@ -303,6 +392,50 @@ struct DraggableTransparentForm: View {
                             }
                         }
                         .pickerStyle(.segmented)
+                        Picker("Alarm Sound", selection: $sound) {
+                            ForEach(soundList, id: \.self) {
+                                Text($0)
+                            }
+                        }
+                        // Audio Player
+                        VStack {
+                            // Sound Progress Slider
+                            Slider(value: $currentTime, in: 0...duration, onEditingChanged: { isEditing in
+                                if !isEditing {
+                                    seekToTime(currentTime)
+                                }
+                            })
+                            .padding()
+                            
+                            // Time Labels
+                            HStack {
+                                Text(formatTime(currentTime))
+                                Spacer()
+                                Text(formatTime(duration))
+                            }
+                            .font(.caption)
+                            .padding(.horizontal)
+
+                            // Play & Stop Buttons
+                            HStack {
+                                Button(action: playSound) {
+                                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                                        .font(.largeTitle)
+                                        .padding()
+                                }
+                                Button(action: stopSound) {
+                                    Image(systemName: "stop.fill")
+                                        .font(.largeTitle)
+                                        .padding()
+                                }
+                            }
+                        }
+                        .onAppear {
+                            setupAudio(filename: sound)
+                        }
+                        .onChange(of: sound) {
+                            setupAudio(filename: sound)
+                        }
                         Button("Add Alarm") {
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 alarms.idList.append(alarms.idList.count + 1)
@@ -316,7 +449,7 @@ struct DraggableTransparentForm: View {
                                     alertBool = true
                                 } else {
                                     PersistenceController.shared.saveAlarmList(alarms: alarms)
-                                    scheduleNotification(id: alarms.layout.last!, alarms: alarms, index: alarms.idList.count - 1)
+                                    scheduleNotification(id: alarms.layout.last!, alarms: alarms, index: alarms.idList.count - 1, filename: sound + ".wav", soundList: &soundArr)
                                 }
                             }
                         }
@@ -327,10 +460,7 @@ struct DraggableTransparentForm: View {
                     
                     Section {
                         Button("Delete Alarms") {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                alarms.removeEverything()
-                            }
-                            PersistenceController.shared.deleteAll()
+                            clearAlertBool = true
                         }
                         .foregroundStyle(Color.red)
                     } header: {

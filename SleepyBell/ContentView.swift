@@ -17,7 +17,9 @@ struct ContentView: View {
     @State private var darkMode: String = "Dark"
     @State private var alert: Bool = false
     @State private var alarmArr: AlarmList = fetchLatestAlarm()
+    @State private var soundList: [String] = []
     
+    @State private var clearAlert: Bool = false
     
     var body: some View {
         ZStack {
@@ -91,6 +93,20 @@ struct ContentView: View {
                       message: Text("Please choose a secondary alarm time that is between 1 and 10 minutes more than your last alarm."),
                       dismissButton: .default(Text("OK")))
             }
+            .alert("Warning", isPresented: $clearAlert) {
+                Button("Yes") {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        alarmArr.removeEverything()
+                    }
+                    PersistenceController.shared.deleteAll()
+                    clearAlert = false
+                }
+                Button("No") {
+                    clearAlert = false
+                }
+            } message: {
+                Text("Deleting everything means deleting all alarms, scheduled notifications and sleep data. Are you sure you want to do this?")
+            }
             .onAppear() {
                 startTimer()
             }
@@ -111,7 +127,7 @@ struct ContentView: View {
             
             
             if showForm {
-                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert, alarms: $alarmArr)
+                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert, alarms: $alarmArr, clearAlertBool: $clearAlert, soundArr: $soundList)
             }
             
             if showSettings {
@@ -119,7 +135,7 @@ struct ContentView: View {
             }
             
             if showNotifications {
-                Notifications(showForm: $showNotifications, mode: $darkMode)
+                Notifications(showForm: $showNotifications, mode: $darkMode, soundArr: $soundList)
             }
         }
         .onAppear() {

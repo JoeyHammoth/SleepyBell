@@ -8,11 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		342359272D5147B1007A8424 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 342359262D5147B1007A8424 /* Notifications.swift */; };
-		342359292D5149AD007A8424 /* sound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 342359282D5149AD007A8424 /* sound.wav */; };
 		346A7D3F2D4D069B00FA0948 /* SleepyBellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346A7D3E2D4D069B00FA0948 /* SleepyBellApp.swift */; };
 		346A7D412D4D069B00FA0948 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 346A7D402D4D069B00FA0948 /* ContentView.swift */; };
 		346A7D432D4D069E00FA0948 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346A7D422D4D069E00FA0948 /* Assets.xcassets */; };
 		346A7D462D4D069E00FA0948 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */; };
+		346C55B32D54A10300391006 /* lottery.wav in Resources */ = {isa = PBXBuildFile; fileRef = 346C55B22D54A0F000391006 /* lottery.wav */; };
+		346C55B82D54B38C00391006 /* alert.wav in Resources */ = {isa = PBXBuildFile; fileRef = 346C55B42D54B38C00391006 /* alert.wav */; };
+		346C55B92D54B38C00391006 /* rooster.wav in Resources */ = {isa = PBXBuildFile; fileRef = 346C55B52D54B38C00391006 /* rooster.wav */; };
+		346C55BA2D54B38C00391006 /* classic.wav in Resources */ = {isa = PBXBuildFile; fileRef = 346C55B62D54B38C00391006 /* classic.wav */; };
+		346C55BB2D54B38C00391006 /* morning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 346C55B72D54B38C00391006 /* morning.wav */; };
 		34A5DCA32D4E8EC000882C90 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A5DCA22D4E8EC000882C90 /* Settings.swift */; };
 		34A5DCAD2D4E9E5B00882C90 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCAC2D4E9E5B00882C90 /* SwiftUIIntrospect */; settings = {ATTRIBUTES = (Required, ); }; };
 		34A5DCAF2D4EA3D500882C90 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 34A5DCAE2D4EA3D500882C90 /* SwiftUIIntrospect */; };
@@ -24,12 +28,16 @@
 
 /* Begin PBXFileReference section */
 		342359262D5147B1007A8424 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		342359282D5149AD007A8424 /* sound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = sound.wav; path = ../../../sound.wav; sourceTree = "<group>"; };
 		346A7D3B2D4D069B00FA0948 /* SleepyBell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepyBell.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		346A7D3E2D4D069B00FA0948 /* SleepyBellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepyBellApp.swift; sourceTree = "<group>"; };
 		346A7D402D4D069B00FA0948 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		346A7D422D4D069E00FA0948 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		346C55B22D54A0F000391006 /* lottery.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = lottery.wav; sourceTree = "<group>"; };
+		346C55B42D54B38C00391006 /* alert.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = alert.wav; path = ../../../../../Downloads/alert.wav; sourceTree = "<group>"; };
+		346C55B52D54B38C00391006 /* rooster.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = rooster.wav; path = ../../../../../Downloads/rooster.wav; sourceTree = "<group>"; };
+		346C55B62D54B38C00391006 /* classic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = classic.wav; path = ../../../../../Downloads/classic.wav; sourceTree = "<group>"; };
+		346C55B72D54B38C00391006 /* morning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = morning.wav; path = ../../../../../Downloads/morning.wav; sourceTree = "<group>"; };
 		34A5DCA22D4E8EC000882C90 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		34A614AF2D5282E8007F6718 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		34A919C32D4D1D5F000E13F3 /* DayNight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayNight.swift; sourceTree = "<group>"; };
@@ -70,8 +78,8 @@
 		346A7D3D2D4D069B00FA0948 /* SleepyBell */ = {
 			isa = PBXGroup;
 			children = (
+				346C55B12D54A0E700391006 /* Sounds */,
 				34A614AF2D5282E8007F6718 /* Info.plist */,
-				342359282D5149AD007A8424 /* sound.wav */,
 				34A5DCA22D4E8EC000882C90 /* Settings.swift */,
 				346A7D3E2D4D069B00FA0948 /* SleepyBellApp.swift */,
 				346A7D402D4D069B00FA0948 /* ContentView.swift */,
@@ -92,6 +100,18 @@
 				346A7D452D4D069E00FA0948 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		346C55B12D54A0E700391006 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				346C55B42D54B38C00391006 /* alert.wav */,
+				346C55B62D54B38C00391006 /* classic.wav */,
+				346C55B72D54B38C00391006 /* morning.wav */,
+				346C55B52D54B38C00391006 /* rooster.wav */,
+				346C55B22D54A0F000391006 /* lottery.wav */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,8 +180,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				346A7D462D4D069E00FA0948 /* Preview Assets.xcassets in Resources */,
-				342359292D5149AD007A8424 /* sound.wav in Resources */,
+				346C55BA2D54B38C00391006 /* classic.wav in Resources */,
+				346C55B32D54A10300391006 /* lottery.wav in Resources */,
 				346A7D432D4D069E00FA0948 /* Assets.xcassets in Resources */,
+				346C55B92D54B38C00391006 /* rooster.wav in Resources */,
+				346C55BB2D54B38C00391006 /* morning.wav in Resources */,
+				346C55B82D54B38C00391006 /* alert.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
