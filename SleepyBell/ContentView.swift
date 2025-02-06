@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  SleepyBell
 //
-//  Created by James Nikolas jon 1/31/25.
+//  Created by JoeyHammoth jon 1/31/25.
 //
 
 import SwiftUI
@@ -17,7 +17,7 @@ struct ContentView: View {
     @State private var darkMode: String = "Dark"
     @State private var alert: Bool = false
     @State private var alarmArr: AlarmList = fetchLatestAlarm()
-    @State private var soundList: [String] = []
+    @State private var soundHM: [String:String] = fetchLatestSoundDict()
     
     @State private var clearAlert: Bool = false
     
@@ -98,6 +98,8 @@ struct ContentView: View {
                     withAnimation(.easeInOut(duration: 0.3)) {
                         alarmArr.removeEverything()
                     }
+                    UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+                    soundHM.removeAll()
                     PersistenceController.shared.deleteAll()
                     clearAlert = false
                 }
@@ -127,7 +129,7 @@ struct ContentView: View {
             
             
             if showForm {
-                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert, alarms: $alarmArr, clearAlertBool: $clearAlert, soundArr: $soundList)
+                DraggableTransparentForm(mode: $darkMode, showForm: $showForm, alertBool: $alert, alarms: $alarmArr, clearAlertBool: $clearAlert, soundDict: $soundHM)
             }
             
             if showSettings {
@@ -135,7 +137,7 @@ struct ContentView: View {
             }
             
             if showNotifications {
-                Notifications(showForm: $showNotifications, mode: $darkMode, soundArr: $soundList)
+                Notifications(showForm: $showNotifications, mode: $darkMode, soundDict: $soundHM)
             }
         }
         .onAppear() {

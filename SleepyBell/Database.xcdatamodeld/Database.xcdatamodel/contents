@@ -7,4 +7,7 @@
         <attribute name="minList" optional="YES" attributeType="Binary"/>
         <attribute name="secList" optional="YES" attributeType="Binary"/>
     </entity>
+    <entity name="NotificationEntity" representedClassName="NotificationEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="soundDict" optional="YES" attributeType="Binary"/>
+    </entity>
 </model>

@@ -2,7 +2,7 @@
 //  Data.swift
 //  SleepyBell
 //
-//  Created by James Nikolas on 2/3/25.
+//  Created by JoeyHammoth on 2/3/25.
 //
 
 import CoreData
@@ -61,6 +61,18 @@ extension AlarmListEntity { // Extension computed variables to convert between a
     
 }
 
+extension NotificationEntity {
+    var soundTitleDict: [String:String] {
+        get {
+            guard let data = soundDict else { return [:] }
+            return (try? JSONDecoder().decode([String:String].self, from: data)) ?? [:]
+        }
+        set {
+            soundDict = try? JSONEncoder().encode(newValue)
+        }
+    }
+}
+
 
 class PersistenceController { // Persistence controller to load database and save stuff inside it
     
@@ -86,6 +98,19 @@ class PersistenceController { // Persistence controller to load database and sav
         alarmEntity.minArray = alarms.minList
         alarmEntity.hourArray = alarms.hourList
         alarmEntity.dayArray = alarms.dayList
+        
+        do {
+            try context.save()  // Save to Core Data
+        } catch {
+            print("Failed to save user: \(error)")
+        }
+    }
+    
+    func saveNotificationSounds(soundDict: [String:String]) {
+        let context = container.viewContext
+        let notiEntity = NotificationEntity(context: context)
+        
+        notiEntity.soundTitleDict = soundDict
         
         do {
             try context.save()  // Save to Core Data
@@ -127,10 +152,31 @@ func fetchAlarmList() -> [AlarmList] { // For fetching stuff from the database
     }
 }
 
+func fetchSoundList() -> [[String:String]] { // For fetching stuff from the database
+    let context = PersistenceController.shared.container.viewContext
+    let fetchRequest: NSFetchRequest<NotificationEntity> = NotificationEntity.fetchRequest()
+    
+    do {
+        let NotificationEntities = try context.fetch(fetchRequest)
+        return NotificationEntities.map { $0.soundTitleDict }
+    } catch {
+        print("Failed to fetch users: \(error)")
+        return []
+    }
+}
+
 func fetchLatestAlarm() -> AlarmList {
     if fetchAlarmList().count == 0 {
         return AlarmList()
     } else {
         return fetchAlarmList().last!
+    }
+}
+
+func fetchLatestSoundDict() -> [String:String] {
+    if fetchSoundList().count == 0 {
+        return [:]
+    } else {
+        return fetchSoundList().last!
     }
 }

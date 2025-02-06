@@ -2,7 +2,7 @@
 //  Form.swift
 //  SleepyBell
 //
-//  Created by James Nikolas on 1/31/25.
+//  Created by JoeyHammoth on 1/31/25.
 //
 
 import SwiftUI
@@ -170,7 +170,7 @@ struct DraggableTransparentForm: View {
     @Binding var alertBool: Bool
     @Binding var alarms: AlarmList
     @Binding var clearAlertBool: Bool
-    @Binding var soundArr: [String]
+    @Binding var soundDict: [String:String]
     
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
@@ -423,11 +423,14 @@ struct DraggableTransparentForm: View {
                                         .font(.largeTitle)
                                         .padding()
                                 }
+                                .buttonStyle(.plain) // Prevent unwanted button wrapping
+                                
                                 Button(action: stopSound) {
                                     Image(systemName: "stop.fill")
                                         .font(.largeTitle)
                                         .padding()
                                 }
+                                .buttonStyle(.plain) // Prevent unwanted button wrapping
                             }
                         }
                         .onAppear {
@@ -436,6 +439,10 @@ struct DraggableTransparentForm: View {
                         .onChange(of: sound) {
                             setupAudio(filename: sound)
                         }
+                        .listRowBackground(Color.clear) // Prevent Section background interference
+                        .contentShape(Rectangle()) // Prevent Section-wide tap gesture
+                        .allowsHitTesting(true) // Ensure buttons remain interactive
+                        
                         Button("Add Alarm") {
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 alarms.idList.append(alarms.idList.count + 1)
@@ -449,7 +456,8 @@ struct DraggableTransparentForm: View {
                                     alertBool = true
                                 } else {
                                     PersistenceController.shared.saveAlarmList(alarms: alarms)
-                                    scheduleNotification(id: alarms.layout.last!, alarms: alarms, index: alarms.idList.count - 1, filename: sound + ".wav", soundList: &soundArr)
+                                    scheduleNotification(id: alarms.layout.last!, alarms: alarms, index: alarms.idList.count - 1, filename: sound + ".wav", soundList: &soundDict)
+                                    PersistenceController.shared.saveNotificationSounds(soundDict: soundDict)
                                 }
                             }
                         }

@@ -2,7 +2,7 @@
 //  SleepyBellApp.swift
 //  SleepyBell
 //
-//  Created by James Nikolas on 1/31/25.
+//  Created by JoeyHammoth on 1/31/25.
 //
 
 import SwiftUI
