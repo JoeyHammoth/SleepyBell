@@ -29,6 +29,14 @@ struct SleepEvent: Identifiable {
     }
 }
 
+/// A new model for aggregated (binned) heat map data.
+struct SleepHeatMapData: Identifiable {
+    let id = UUID()
+    let day: Date      // For simplicity, the start of day
+    let hour: Int      // The hour of the day (0...23)
+    let count: Int     // How many events occurred in that bin
+}
+
 struct Statistics: View {
     
     @Binding var showForm: Bool
@@ -46,6 +54,14 @@ struct Statistics: View {
     @State private var cumulativeChartScale: CGFloat = 1.0
     @State private var chartDragOffset: CGSize = .zero
     @State private var cumulativeChartDragOffset: CGSize = .zero
+    
+    @State private var yAxisStride: Int = 6000
+    
+    let maxYValue = 86400
+    
+    var computedYAxisValues: [Int] {
+        Array(stride(from: 0, to: maxYValue, by: yAxisStride))
+    }
     
     var sleepEvents: [SleepEvent] {
         var events: [SleepEvent] = []
@@ -121,23 +137,19 @@ struct Statistics: View {
                             }
                         }
                         .chartYAxis {
-                            AxisMarks(values: .stride(by: 7200)) { value in
-                                let labelText: String = {
-                                    if let seconds = value.as(Int.self) {
-                                        // Convert seconds to 12‑hour time components.
-                                        let hour24 = seconds / 3600
-                                        let minute = (seconds % 3600) / 60
-                                        let hour12 = hour24 % 12 == 0 ? 12 : hour24 % 12
-                                        let period = hour24 >= 12 ? "PM" : "AM"
-                                        return String(format: "%02d:%02d %@", hour12, minute, period)
-                                    } else {
-                                        return ""
-                                    }
-                                }()
-                                AxisGridLine()
-                                AxisValueLabel(labelText)
+                            AxisMarks(values: computedYAxisValues) { value in
+                                if let seconds = value.as(Int.self) {
+                                    let hour24 = seconds / 3600
+                                    let minute = (seconds % 3600) / 60
+                                    let hour12 = hour24 % 12 == 0 ? 12 : hour24 % 12
+                                    let period = hour24 >= 12 ? "PM" : "AM"
+                                    let labelText = String(format: "%02d:%02d %@", hour12, minute, period)
+                                    AxisGridLine()
+                                    AxisValueLabel(labelText)
+                                }
                             }
                         }
+                        .chartYScale(domain: 0...maxYValue)
                         .chartXAxis {
                             AxisMarks(values: .automatic) { value in
                                 let labelText: String = {
@@ -181,8 +193,26 @@ struct Statistics: View {
                                     chartDragOffset = .zero
                                 }
                         )
+                        Button("Reset Chart") {
+                            chartScale = 1.0
+                            cumulativeChartScale = 1.0
+                            chartDragOffset = .zero
+                            cumulativeChartDragOffset = .zero
+                        }
+                        VStack {
+                            Text("Y-Axis Stride: \(yAxisStride)")
+                            Slider(value: Binding(
+                                get: {
+                                    Double(yAxisStride)
+                                },
+                                set: { newValue in
+                                    yAxisStride = Int(newValue)
+                                }),
+                                   in: 300...20000, step: 300
+                            )
+                        }
                     } header: {
-                        Text("Graph")
+                        Text("Scatter Plot")
                     }
                 }
                 .navigationTitle("Statistics")
