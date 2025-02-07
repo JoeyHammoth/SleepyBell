@@ -440,7 +440,6 @@ struct DraggableTransparentForm: View {
                         .onChange(of: sound) {
                             setupAudio(filename: sound)
                         }
-                        .listRowBackground(Color.clear) // Prevent Section background interference
                         .contentShape(Rectangle()) // Prevent Section-wide tap gesture
                         .allowsHitTesting(true) // Ensure buttons remain interactive
                         

@@ -126,6 +126,11 @@ struct ContentView: View {
                     UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                     soundHM.removeAll()
                     PersistenceController.shared.deleteAll()
+                    // Remove all data from UserDefaults (notification alerts)
+                    if let domain = Bundle.main.bundleIdentifier {
+                        UserDefaults.standard.removePersistentDomain(forName: domain)
+                        UserDefaults.standard.synchronize() // Ensures changes are saved immediately
+                    }
                     clearAlert = false
                 }
                 Button("No") {
@@ -147,6 +152,8 @@ struct ContentView: View {
                         alarmModeDictCpy[notiAlertCurr] = 1
                     }
                     PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy)
+                    wokeTimeList = fetchLatestAlarmWakeList()
+                    alarmModeDict = fetchLatestAlarmModeList()
                 }
                 Button("No") {
                     sleepTimeListCpy.append(notiAlertCurr)
@@ -156,11 +163,15 @@ struct ContentView: View {
                         alarmModeDictCpy[notiAlertCurr] = 1
                     }
                     PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy)
+                    sleepTimeList = fetchLatestAlarmSleepList()
+                    alarmModeDict = fetchLatestAlarmModeList()
                 }
             } message: {
                 Text("This is the alarm for \(notiAlertCurr). Did you wake up?")
             }
             .onAppear() {
+                updateCurrentTime()
+                checkMissedAlerts()
                 startTimer()
             }
             .onChange(of: darkMode) {
@@ -200,25 +211,99 @@ struct ContentView: View {
         // Update the current time every second
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             updateCurrentTime()
-            
-            // Used for triggering notification alerts
-            let now = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
-            for i in 0..<alarmArr.idList.count {
-                var realHour: Int {
-                    if alarmArr.realHourList[i] == 24 {
-                        return 0
-                    } else {
-                        return alarmArr.realHourList[i]
-                    }
-                }
-                if realHour == now.hour &&
-                    alarmArr.minList[i] == now.minute &&
-                    alarmArr.secList[i] == now.second {
-                    notiAlertBool = true
-                    notiAlertCurr = alarmArr.layout[i]
-                    break
+            checkAndTriggerAlert()
+        }
+    }
+    
+    /// Checks if a scheduled time is reached
+    func checkAndTriggerAlert() {
+        let now = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
+
+        for i in 0..<alarmArr.idList.count {
+            var realHour: Int {
+                if alarmArr.realHourList[i] == 24 {
+                    return 0
+                } else {
+                    return alarmArr.realHourList[i]
                 }
             }
+            
+            let scheduledHour = realHour
+            let scheduledMinute = alarmArr.minList[i]
+            let scheduledSecond = alarmArr.secList[i]
+            
+            let scheduledTimeString = "\(scheduledHour):\(scheduledMinute):\(scheduledSecond)"
+            
+            if scheduledHour == now.hour &&
+               scheduledMinute == now.minute &&
+               scheduledSecond == now.second &&
+               !hasAlertBeenTriggered(for: scheduledTimeString) {
+                notiAlertBool = true
+                notiAlertCurr = alarmArr.layout[i]
+                saveTriggeredAlert(for: scheduledTimeString)
+                break
+            }
+        }
+    }
+
+    /// Checks for missed alerts when the app launches
+    private func checkMissedAlerts() {
+        let now = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
+
+        for i in 0..<alarmArr.idList.count {
+            var realHour: Int {
+                if alarmArr.realHourList[i] == 24 {
+                    return 0
+                } else {
+                    return alarmArr.realHourList[i]
+                }
+            }
+            
+            let scheduledHour = realHour
+            let scheduledMinute = alarmArr.minList[i]
+            let scheduledSecond = alarmArr.secList[i]
+            
+            let scheduledTimeString = "\(scheduledHour):\(scheduledMinute):\(scheduledSecond)"
+            
+            if hasAlertBeenTriggered(for: scheduledTimeString) {
+                continue // Skip if already triggered
+            }
+            
+            // Check if the scheduled time has passed
+            if (scheduledHour < now.hour!) ||
+               (scheduledHour == now.hour! && scheduledMinute < now.minute!) ||
+               (scheduledHour == now.hour! && scheduledMinute == now.minute! && scheduledSecond <= now.second!) {
+                notiAlertBool = true
+                notiAlertCurr = alarmArr.layout[i]
+                saveTriggeredAlert(for: scheduledTimeString)
+                break
+            }
+        }
+    }
+
+    /// Saves a triggered alert in UserDefaults
+    private func saveTriggeredAlert(for time: String) {
+        var triggeredAlerts = UserDefaults.standard.array(forKey: "TriggeredAlerts") as? [String] ?? []
+        triggeredAlerts.append(time)
+        UserDefaults.standard.set(triggeredAlerts, forKey: "TriggeredAlerts")
+    }
+
+    /// Checks if an alert has already been triggered
+    private func hasAlertBeenTriggered(for time: String) -> Bool {
+        let triggeredAlerts = UserDefaults.standard.array(forKey: "TriggeredAlerts") as? [String] ?? []
+        return triggeredAlerts.contains(time)
+    }
+    
+    /// Resets triggered alerts when a new day starts
+    private func resetAlertsForNewDay() {
+        let now = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        let todayString = "\(now.year!)-\(now.month!)-\(now.day!)"
+
+        let lastReset = UserDefaults.standard.string(forKey: "LastResetDate") ?? ""
+
+        if lastReset != todayString {
+            UserDefaults.standard.set([], forKey: "TriggeredAlerts") // Clear previous alerts
+            UserDefaults.standard.set(todayString, forKey: "LastResetDate") // Store today's date
         }
     }
     
