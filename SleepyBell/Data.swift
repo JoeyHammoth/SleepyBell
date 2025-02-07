@@ -103,6 +103,26 @@ extension StatisticsEntity {
             modeDict = try? JSONEncoder().encode(newValue)
         }
     }
+    
+    var wakeDateArray: [String] {
+        get {
+            guard let data = wokenDateList else { return [] }
+            return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        }
+        set {
+            wokenDateList = try? JSONEncoder().encode(newValue)
+        }
+    }
+    
+    var sleepDateArray: [String] {
+        get {
+            guard let data = sleepingDateList else { return [] }
+            return (try? JSONDecoder().decode([String].self, from: data)) ?? []
+        }
+        set {
+            sleepingDateList = try? JSONEncoder().encode(newValue)
+        }
+    }
 }
 
 class PersistenceController { // Persistence controller to load database and save stuff inside it
@@ -150,13 +170,15 @@ class PersistenceController { // Persistence controller to load database and sav
         }
     }
     
-    func saveStats(sleepList: [String], wakingList: [String], modesDict: [String:Int]) {
+    func saveStats(sleepList: [String], wakingList: [String], modesDict: [String:Int], sleepDateList: [String], wakingDateList: [String]) {
         let context = container.viewContext
         let statEntity = StatisticsEntity(context: context)
         
         statEntity.wakeArray = wakingList
         statEntity.sleepArray = sleepList
         statEntity.alarmModesDict = modesDict
+        statEntity.wakeDateArray = wakingDateList
+        statEntity.sleepDateArray = sleepDateList
         
         do {
             try context.save()  // Save to Core Data
@@ -250,6 +272,32 @@ func fetchAlarmModeList() -> [[String:Int]] {
     }
 }
 
+func fetchAlarmWakeDateList() -> [[String]] {
+    let context = PersistenceController.shared.container.viewContext
+    let fetchRequest: NSFetchRequest<StatisticsEntity> = StatisticsEntity.fetchRequest()
+    
+    do {
+        let StatEntities = try context.fetch(fetchRequest)
+        return StatEntities.map { $0.wakeDateArray }
+    } catch {
+        print("Failed to fetch wakes: \(error)")
+        return []
+    }
+}
+
+func fetchAlarmSleepDateList() -> [[String]] {
+    let context = PersistenceController.shared.container.viewContext
+    let fetchRequest: NSFetchRequest<StatisticsEntity> = StatisticsEntity.fetchRequest()
+    
+    do {
+        let StatEntities = try context.fetch(fetchRequest)
+        return StatEntities.map { $0.sleepDateArray }
+    } catch {
+        print("Failed to fetch wakes: \(error)")
+        return []
+    }
+}
+
 func fetchLatestAlarm() -> AlarmList {
     if fetchAlarmList().count == 0 {
         return AlarmList()
@@ -287,5 +335,21 @@ func fetchLatestAlarmModeList() -> [String:Int] {
         return [:]
     } else {
         return fetchAlarmModeList().last!
+    }
+}
+
+func fetchLatestAlarmWakeDateList() -> [String] {
+    if fetchAlarmWakeDateList().count == 0 {
+        return []
+    } else {
+        return fetchAlarmWakeDateList().last!
+    }
+}
+
+func fetchLatestAlarmSleepDateList() -> [String] {
+    if fetchAlarmSleepDateList().count == 0 {
+        return []
+    } else {
+        return fetchAlarmSleepDateList().last!
     }
 }

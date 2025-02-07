@@ -112,7 +112,8 @@ struct Notifications: View {
                         Text("Here is a list of all sheduled notification alarms. Modify them at your own discretion.")
                     } header: {
                         Text("About")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     ForEach(notificationList, id: \.self) { noti in
                         Section {
@@ -152,7 +153,8 @@ struct Notifications: View {
                             }
                         } header: {
                             Text("Notification \(noti)")
-                                .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                                .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                                .fontWeight(.bold)
                         }
                         .transition(.move(edge: .top).combined(with: .opacity))
                         .listRowBackground(LinearGradient(gradient: Gradient(colors: gradColors),

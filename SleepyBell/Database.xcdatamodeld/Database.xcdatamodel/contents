@@ -12,7 +12,9 @@
     </entity>
     <entity name="StatisticsEntity" representedClassName="StatisticsEntity" syncable="YES" codeGenerationType="class">
         <attribute name="modeDict" optional="YES" attributeType="Binary"/>
+        <attribute name="sleepingDateList" optional="YES" attributeType="Binary"/>
         <attribute name="sleepingList" optional="YES" attributeType="Binary"/>
+        <attribute name="wokenDateList" optional="YES" attributeType="Binary"/>
         <attribute name="wokenList" optional="YES" attributeType="Binary"/>
     </entity>
 </model>

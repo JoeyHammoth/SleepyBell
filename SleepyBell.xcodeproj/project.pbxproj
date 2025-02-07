@@ -24,6 +24,7 @@
 		34A919C62D4D1DC7000E13F3 /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34A919C52D4D1DC7000E13F3 /* Form.swift */; };
 		34AD846D2D4FED8F0081B262 /* Database.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 34AD846B2D4FED8F0081B262 /* Database.xcdatamodeld */; };
 		34AD846F2D4FEECC0081B262 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34AD846E2D4FEECC0081B262 /* Data.swift */; };
+		34CBB2A22D55F6EA00CD1041 /* Statistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34CBB2A12D55F6EA00CD1041 /* Statistics.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		34A919C52D4D1DC7000E13F3 /* Form.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
 		34AD846C2D4FED8F0081B262 /* Database.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Database.xcdatamodel; sourceTree = "<group>"; };
 		34AD846E2D4FEECC0081B262 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		34CBB2A12D55F6EA00CD1041 /* Statistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Statistics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				34AD846B2D4FED8F0081B262 /* Database.xcdatamodeld */,
 				34AD846E2D4FEECC0081B262 /* Data.swift */,
 				342359262D5147B1007A8424 /* Notifications.swift */,
+				34CBB2A12D55F6EA00CD1041 /* Statistics.swift */,
 			);
 			path = SleepyBell;
 			sourceTree = "<group>";
@@ -197,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				342359272D5147B1007A8424 /* Notifications.swift in Sources */,
+				34CBB2A22D55F6EA00CD1041 /* Statistics.swift in Sources */,
 				34AD846D2D4FED8F0081B262 /* Database.xcdatamodeld in Sources */,
 				34A5DCA32D4E8EC000882C90 /* Settings.swift in Sources */,
 				346A7D412D4D069B00FA0948 /* ContentView.swift in Sources */,

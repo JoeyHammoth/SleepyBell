@@ -24,6 +24,7 @@ extension View {
 
 struct ContentView: View {
     @State private var starNum: Int = 100
+    @State private var showStats = false
     @State private var showNotifications = false
     @State private var showSettings = false
     @State private var showForm = false
@@ -40,6 +41,8 @@ struct ContentView: View {
     
     @State private var wokeTimeList: [String] = fetchLatestAlarmWakeList()
     @State private var sleepTimeList: [String] = fetchLatestAlarmSleepList()
+    @State private var wokeTimeDateList: [String] = fetchLatestAlarmWakeDateList()
+    @State private var sleepTimeDateList: [String] = fetchLatestAlarmSleepDateList()
     @State private var alarmModeDict: [String:Int] = fetchLatestAlarmModeList()
     
     @State private var selectedFont: String = "Helvetica Neue"
@@ -64,6 +67,21 @@ struct ContentView: View {
                     
                 Spacer()
                 HStack {
+                    Button(action: {
+                        withAnimation {
+                            showStats.toggle()
+                        }
+                    }) {
+                        Image(systemName: "chart.xyaxis.line") // Use a system image for the alarm icon
+                            .resizable()
+                            .frame(width: 24, height: 24) // Set the size of the icon
+                            .foregroundColor(.black) // Set the icon color
+                            .padding()
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(Capsule())
+                            .shadow(radius: 5)
+                    }
+                    .padding()
                     Button(action: {
                         withAnimation {
                             showForm.toggle()
@@ -141,30 +159,41 @@ struct ContentView: View {
             }
             // notification alerts
             .alert("Alarm is Off!", isPresented: $notiAlertBool) {
+                let now = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+                let todayString = "\(now.year!)-\(now.month!)-\(now.day!)"
+                
+                var wokeTimeDateListCpy = wokeTimeDateList
+                var sleepTimeDateListCpy = sleepTimeDateList
                 var wokeTimeListCpy = wokeTimeList
                 var alarmModeDictCpy = alarmModeDict
                 var sleepTimeListCpy = sleepTimeList
                 Button("Yes") {
                     wokeTimeListCpy.append(notiAlertCurr)
+                    wokeTimeDateListCpy.append(todayString)
                     if alarmModeDictCpy[notiAlertCurr] != nil {
                         alarmModeDictCpy[notiAlertCurr] = alarmModeDictCpy[notiAlertCurr]! + 1
                     } else {
                         alarmModeDictCpy[notiAlertCurr] = 1
                     }
-                    PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy)
+                    PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy, sleepDateList: sleepTimeDateListCpy, wakingDateList: wokeTimeDateListCpy)
                     wokeTimeList = fetchLatestAlarmWakeList()
                     alarmModeDict = fetchLatestAlarmModeList()
+                    wokeTimeDateList = fetchLatestAlarmWakeDateList()
+                    sleepTimeDateList = fetchLatestAlarmSleepDateList()
                 }
                 Button("No") {
                     sleepTimeListCpy.append(notiAlertCurr)
+                    sleepTimeDateListCpy.append(todayString)
                     if alarmModeDictCpy[notiAlertCurr] != nil {
                         alarmModeDictCpy[notiAlertCurr] = alarmModeDictCpy[notiAlertCurr]! + 1
                     } else {
                         alarmModeDictCpy[notiAlertCurr] = 1
                     }
-                    PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy)
+                    PersistenceController.shared.saveStats(sleepList: sleepTimeListCpy, wakingList: wokeTimeListCpy, modesDict: alarmModeDictCpy, sleepDateList: sleepTimeDateListCpy, wakingDateList: wokeTimeDateListCpy)
                     sleepTimeList = fetchLatestAlarmSleepList()
                     alarmModeDict = fetchLatestAlarmModeList()
+                    wokeTimeDateList = fetchLatestAlarmWakeDateList()
+                    sleepTimeDateList = fetchLatestAlarmSleepDateList()
                 }
             } message: {
                 Text("This is the alarm for \(notiAlertCurr). Did you wake up?")
@@ -200,6 +229,10 @@ struct ContentView: View {
             
             if showNotifications {
                 Notifications(showForm: $showNotifications, mode: $darkMode, soundDict: $soundHM, occurencesDict: $alarmModeDict)
+            }
+            
+            if showStats {
+                Statistics(showForm: $showStats, sleepDateList: $sleepTimeDateList, wakeDataList: $wokeTimeDateList, sleepList: $sleepTimeList, wakeList: $wokeTimeList)
             }
         }
         .onAppear() {

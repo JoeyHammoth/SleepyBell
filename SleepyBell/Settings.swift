@@ -45,7 +45,8 @@ struct Settings: View {
                         Text("Number of stars: \(starAmount)")
                     } header: {
                         Text("Set Star Count (Night Only)")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     
                     Section {
@@ -57,7 +58,8 @@ struct Settings: View {
                         .pickerStyle(.segmented)
                     } header: {
                         Text("Set background")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     
                     Section {
@@ -68,7 +70,8 @@ struct Settings: View {
                         }
                     } header: {
                         Text("Set Fonts")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     
                 }

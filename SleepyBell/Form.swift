@@ -322,7 +322,8 @@ struct DraggableTransparentForm: View {
                         .foregroundColor(Color.red)
                     } header: {
                         Text("About")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     
                     ForEach(0..<alarms.idList.count, id: \.self) { index in // Must use explicit closure parameter index instead of $0
@@ -351,7 +352,8 @@ struct DraggableTransparentForm: View {
                             }
                         } header: {
                             Text("Alarm \(alarms.idList[index]) (\(alarms.primaryList[index]))")
-                                .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                                .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                                .fontWeight(.bold)
                         }
                         .transition(.move(edge: .top).combined(with: .opacity))
                         .listRowBackground(alarms.mornList[index] == "Morning" ?
@@ -463,7 +465,8 @@ struct DraggableTransparentForm: View {
                         }
                     } header: {
                         Text("Add new alarm")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     
                     Section {
@@ -473,7 +476,8 @@ struct DraggableTransparentForm: View {
                         .foregroundStyle(Color.red)
                     } header: {
                         Text("Remove all alarms")
-                            .foregroundStyle(mode == "Dark" ? Color.gray : Color.white)
+                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .fontWeight(.bold)
                     }
                     
                 }
