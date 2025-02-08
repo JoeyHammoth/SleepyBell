@@ -22,6 +22,17 @@ extension View {
     }
 }
 
+extension View {
+    @ViewBuilder
+    func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
+    }
+}
+
 struct ContentView: View {
     @State private var starNum: Int = 100
     @State private var showStats = false
@@ -46,7 +57,8 @@ struct ContentView: View {
     @State private var alarmModeDict: [String:Int] = fetchLatestAlarmModeList()
     
     @State private var selectedFont: String = "Helvetica Neue"
-    @State private var selectedFontSize: CGFloat = 0
+    @State private var selectedFontSize: CGFloat = 16
+    @State private var enableFontChange: Bool = false
     
     var body: some View {
         ZStack {
@@ -81,7 +93,6 @@ struct ContentView: View {
                             .clipShape(Capsule())
                             .shadow(radius: 5)
                     }
-                    .padding()
                     Button(action: {
                         withAnimation {
                             showForm.toggle()
@@ -96,7 +107,6 @@ struct ContentView: View {
                             .clipShape(Capsule())
                             .shadow(radius: 5)
                     }
-                    .padding()
                     Button(action: {
                         withAnimation {
                             showSettings.toggle()
@@ -111,7 +121,6 @@ struct ContentView: View {
                             .clipShape(Capsule())
                             .shadow(radius: 5)
                     }
-                    .padding()
                     Button(action: {
                         withAnimation {
                             showNotifications.toggle()
@@ -126,8 +135,26 @@ struct ContentView: View {
                             .clipShape(Capsule())
                             .shadow(radius: 5)
                     }
-                    .padding()
+                    Button(action: {
+                        withAnimation {
+                            if let url = URL(string: "https://github.com/JoeyHammoth/SleepyBell") {
+                                            UIApplication.shared.open(url)
+                                        }
+                        }
+                    }) {
+                        Image(systemName: "network") // Use a system image for the alarm icon
+                            .resizable()
+                            .frame(width: 24, height: 24) // Set the size of the icon
+                            .foregroundColor(.black) // Set the icon color
+                            .padding()
+                            .background(Color.white.opacity(0.8))
+                            .clipShape(Capsule())
+                            .shadow(radius: 5)
+                    }
                 }
+                Text("JoeyHammoth MIT License")
+                    .font(.system(size: 15, weight: .bold))
+                    .padding()
             }
             // alert for wrong alarm
             .alert(isPresented: $alert) {
@@ -224,7 +251,7 @@ struct ContentView: View {
             }
             
             if showSettings {
-                Settings(starAmount: $starNum, showForm: $showSettings, mode: $darkMode, font: $selectedFont)
+                Settings(starAmount: $starNum, showForm: $showSettings, mode: $darkMode, font: $selectedFont, size: $selectedFontSize, enableChangeFont: $enableFontChange)
             }
             
             if showNotifications {
@@ -234,6 +261,9 @@ struct ContentView: View {
             if showStats {
                 Statistics(showForm: $showStats, sleepDateList: $sleepTimeDateList, wakeDateList: $wokeTimeDateList, sleepList: $sleepTimeList, wakeList: $wokeTimeList)
             }
+        }
+        .if(enableFontChange) { view in
+            view.globalFont(font: selectedFont, fontSize: selectedFontSize)
         }
         .onAppear() {
             requestNotificationPermission()

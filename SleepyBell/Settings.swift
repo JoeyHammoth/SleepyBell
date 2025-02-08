@@ -11,12 +11,29 @@ import SwiftUI
 struct Settings: View {
     
     let modeList = ["Light", "Dark"]
-    let fontList = ["Helvetica Neue"]
+    let fontList = [
+        // System Default
+        "San Francisco", "Helvetica Neue",
+        
+        // Serif Fonts
+        "Times New Roman", "Georgia", "Palatino", "Baskerville", "Didot",
+        
+        // Sans-Serif Fonts
+        "Arial", "Helvetica", "Verdana", "Gill Sans", "Futura", "Trebuchet MS", "Avenir",
+        
+        // Monospace Fonts
+        "Courier", "Courier New", "Menlo", "Monaco", "SF Mono",
+        
+        // Handwriting & Decorative Fonts
+        "Marker Felt", "Chalkboard SE", "Noteworthy", "Papyrus", "Zapfino"
+    ]
     
     @Binding var starAmount: Int
     @Binding var showForm: Bool
     @Binding var mode: String
     @Binding var font: String
+    @Binding var size: CGFloat
+    @Binding var enableChangeFont: Bool
     
     @State private var offsetY: CGFloat = 400  // Start hidden below screen
     @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
@@ -31,6 +48,13 @@ struct Settings: View {
                 .padding(5)
             NavigationStack {
                 Form {
+                    Section {
+                        Text("This is where all settings for the app are located. These settings are for aesthetic purposes only and reset whenever you re-enter the app.")
+                    } header: {
+                        Text("About")
+                            .foregroundStyle(Color.white)
+                            .fontWeight(.bold)
+                    }
                     Section {
                         Slider(value: Binding(
                             get: {
@@ -63,13 +87,28 @@ struct Settings: View {
                     }
                     
                     Section {
+                        Toggle(isOn: $enableChangeFont) {
+                            Text("Enable Font Modification")
+                        }
                         Picker("Font", selection: $font) {
                             ForEach(fontList, id: \.self) {
                                 Text($0)
                             }
                         }
+                        VStack {
+                            Text("Font Size: \(size)")
+                            Slider(value: Binding(
+                                get: {
+                                    Double(size)
+                                },
+                                set: { newValue in
+                                    size = CGFloat(newValue)
+                                }),
+                                   in: 1...40, step: 0.2
+                            )
+                        }
                     } header: {
-                        Text("Set Fonts")
+                        Text("Font Modification")
                             .foregroundStyle(Color.white)
                             .fontWeight(.bold)
                     }

@@ -413,6 +413,18 @@ struct Statistics: View {
                 Form {
                     
                     Section {
+                        Text("This is where you can see vital statistics regarding your sleeping habits based on how you react to the scheduled alarms.")
+                        Text("Blue corresponds to times when you have woken up successfully.")
+                            .foregroundColor(Color.blue)
+                        Text("Red corresponds to times when you have went back to sleep.")
+                            .foregroundColor(Color.red)
+                    } header: {
+                        Text("About")
+                            .foregroundStyle(Color.white)
+                            .fontWeight(.bold)
+                    }
+                    
+                    Section {
                         ForEach(Array(zip(sleepList, sleepDateList).enumerated()), id: \.offset) { index, pair in
                             HStack {
                                 VStack {
