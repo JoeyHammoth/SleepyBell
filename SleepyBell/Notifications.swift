@@ -78,7 +78,7 @@ struct Notifications: View {
     
     @State private var notificationList: [String] = []
     
-    @State private var gradColors: [Color] = [Color.red, Color.white]
+    @State private var gradColors: [Color] = [Color.gray.opacity(0.5), Color.black]
     
     func fetchNotifications() {
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
@@ -91,10 +91,10 @@ struct Notifications: View {
     func animateGradient() {
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
             withAnimation(.easeInOut(duration: 3)) {
-                if gradColors == [Color.red, Color.white] {
-                    gradColors = [Color.pink, Color.white] // Simulating noon
+                if gradColors == [Color.gray.opacity(0.5), Color.black] {
+                    gradColors = [Color.gray, Color.black] // Simulating noon
                 } else {
-                    gradColors = [Color.red, Color.white] // Reset to morning
+                    gradColors = [Color.gray.opacity(0.5), Color.black] // Reset to morning
                 }
             }
         }
@@ -112,7 +112,7 @@ struct Notifications: View {
                         Text("Here is a list of all sheduled notification alarms. Modify them at your own discretion.")
                     } header: {
                         Text("About")
-                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .foregroundStyle(Color.white)
                             .fontWeight(.bold)
                     }
                     ForEach(notificationList, id: \.self) { noti in
@@ -153,7 +153,7 @@ struct Notifications: View {
                             }
                         } header: {
                             Text("Notification \(noti)")
-                                .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                                .foregroundStyle(Color.white)
                                 .fontWeight(.bold)
                         }
                         .transition(.move(edge: .top).combined(with: .opacity))

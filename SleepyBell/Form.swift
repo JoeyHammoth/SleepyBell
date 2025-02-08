@@ -322,7 +322,7 @@ struct DraggableTransparentForm: View {
                         .foregroundColor(Color.red)
                     } header: {
                         Text("About")
-                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .foregroundStyle(Color.white)
                             .fontWeight(.bold)
                     }
                     
@@ -352,7 +352,7 @@ struct DraggableTransparentForm: View {
                             }
                         } header: {
                             Text("Alarm \(alarms.idList[index]) (\(alarms.primaryList[index]))")
-                                .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                                .foregroundStyle(Color.white)
                                 .fontWeight(.bold)
                         }
                         .transition(.move(edge: .top).combined(with: .opacity))
@@ -465,7 +465,7 @@ struct DraggableTransparentForm: View {
                         }
                     } header: {
                         Text("Add new alarm")
-                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .foregroundStyle(Color.white)
                             .fontWeight(.bold)
                     }
                     
@@ -476,7 +476,7 @@ struct DraggableTransparentForm: View {
                         .foregroundStyle(Color.red)
                     } header: {
                         Text("Remove all alarms")
-                            .foregroundStyle(mode == "Dark" ? Color.black : Color.white)
+                            .foregroundStyle(Color.white)
                             .fontWeight(.bold)
                     }
                     

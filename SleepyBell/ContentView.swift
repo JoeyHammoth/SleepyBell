@@ -232,7 +232,7 @@ struct ContentView: View {
             }
             
             if showStats {
-                Statistics(showForm: $showStats, sleepDateList: $sleepTimeDateList, wakeDataList: $wokeTimeDateList, sleepList: $sleepTimeList, wakeList: $wokeTimeList)
+                Statistics(showForm: $showStats, sleepDateList: $sleepTimeDateList, wakeDateList: $wokeTimeDateList, sleepList: $sleepTimeList, wakeList: $wokeTimeList)
             }
         }
         .onAppear() {
