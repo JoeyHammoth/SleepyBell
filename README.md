@@ -141,6 +141,9 @@ The SleepyBell project is organized into several key components:
 3. **Run the app:**  
    Build and run the app on the iOS simulator or deploy it directly to an iOS device.
 
+### Dependencies
+This project requires the SwiftUI introspect package that can be found [here](https://github.com/siteline/SwiftUI-Introspect).
+
 ---
 
 ## 🛠️ Usage
@@ -212,4 +215,10 @@ Detailed documentation for the project, including design decisions and code arch
 
 ---
 
-Happy Sleeping and Productive Waking with SleepyBell!
+## 📘 Citations
+
+This project requires the use of swiftUI introspect package which can be found [here](https://github.com/siteline/SwiftUI-Introspect). Alarm sound effects are taken from mixkit and can be found [here](https://mixkit.co/free-sound-effects/alarm/). 
+
+---
+
+😄 Happy Sleeping and Productive Waking with SleepyBell!
