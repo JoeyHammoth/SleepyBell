@@ -45,19 +45,19 @@ A simple alarm application to increase your quality of sleep!
    <img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Demos/gifs/Fonts2.gif" style="display: inline;" alt="loosing-game" width="250">
 </p>
 
-## App Navigation
+### App Navigation
 <p>
    <img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Demos/gifs/Net.gif" style="display: inline;" alt="loosing-game" width="250">
    <img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Demos/gifs/Sections.gif" style="display: inline;" alt="loosing-game" width="250">
 </p>
 
-## Miscellaneous
+### Miscellaneous
 <p>
    <img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Demos/gifs/DarkLight.gif" style="display: inline;" alt="loosing-game" width="250">
    <img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Demos/gifs/Deletion.gif" style="display: inline;" alt="loosing-game" width="250">
 </p>
 
-## Alarm Functionality
+### Alarm Functionality
 
 https://github.com/user-attachments/assets/799e76c1-2e78-426a-aeaa-4036f3d16359
 
