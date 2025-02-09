@@ -2,7 +2,7 @@
 
 <img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Images/Cloud.gif" alt="logo" width="250">
 
-A simple alarm application to increase your quality of sleep!
+A simple alarm application to increase your quality of sleep! Documentation can be found [here](https://joeyhammoth.github.io/SleepyBell/).
 
 ---
 
@@ -99,6 +99,7 @@ https://github.com/user-attachments/assets/a45d3818-3dcc-492c-bdc7-ae69f82dd0c4
 │   └── lottery.wav
 └── Statistics.swift
 ```
+<img src="https://github.com/JoeyHammoth/SleepyBell/blob/main/Images/diagram.png" alt="logo" width="1000" height="100">
 
 The SleepyBell project is organized into several key components:
 
