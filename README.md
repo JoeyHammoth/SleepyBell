@@ -187,8 +187,6 @@ We welcome contributions from the community! To get started:
    ```
 5. **Submit a pull request.**
 
-Please refer to our [CONTRIBUTING.md](CONTRIBUTING.md) for additional guidelines on how to contribute.
-
 ---
 
 ## 📖 Documentation
