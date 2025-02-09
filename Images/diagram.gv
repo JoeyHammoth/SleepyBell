@@ -1,0 +1,18 @@
+digraph {
+  SleepEventType -> String
+  DayHour -> Hashable
+  SleepEvent -> Identifiable
+  SleepHeatMapData -> Identifiable
+  Statistics -> View
+  SleepyBellApp -> App
+  Notifications -> View
+  Settings -> View
+  HandView -> View
+  DraggableTransparentForm -> View
+  GlobalFontModifier -> ViewModifier
+  ContentView -> View
+  DayNightToggleView -> View
+  DaylightBackgroundView -> View
+  StarryBackgroundView -> View
+  Star -> Identifiable
+}

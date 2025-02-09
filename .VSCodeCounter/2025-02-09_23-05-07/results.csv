@@ -1,0 +1,14 @@
+"filename", "language", "Swift", "JSON", "comment", "blank", "total"
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Assets.xcassets/AccentColor.colorset/Contents.json", "JSON", 0, 11, 0, 1, 12
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Assets.xcassets/AppIcon.appiconset/Contents.json", "JSON", 0, 14, 0, 1, 15
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Assets.xcassets/Contents.json", "JSON", 0, 6, 0, 1, 7
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/ContentView.swift", "Swift", 333, 0, 128, 73, 534
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Data.swift", "Swift", 304, 0, 94, 59, 457
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/DayNight.swift", "Swift", 94, 0, 61, 16, 171
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Form.swift", "Swift", 445, 0, 171, 92, 708
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Notifications.swift", "Swift", 192, 0, 73, 35, 300
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Preview Content/Preview Assets.xcassets/Contents.json", "JSON", 0, 6, 0, 1, 7
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Settings.swift", "Swift", 142, 0, 73, 32, 247
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/SleepyBellApp.swift", "Swift", 11, 0, 6, 4, 21
+"/Users/jamesnikolas/Desktop/SleepyBell/SleepyBell/SleepyBell/Statistics.swift", "Swift", 504, 0, 174, 58, 736
+"Total", "-", 2025, 37, 780, 373, 3215

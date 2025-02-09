@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepyBell - scheduleNotification(id:alarms:index:filename:soundList:)</title>
+    <link rel="stylesheet" type="text/css" href="/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/">
+            <strong>
+                SleepyBell
+            </strong>
+            <span>Documentation</span>
+        </a>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol/>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+<small>Function</small>
+<span class="name">schedule​Notification(id:​alarms:​index:​filename:​sound​List:​)</span>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">scheduleNotification</span>(<span class="variable">id</span>: <span class="type">String</span>, <span class="variable">alarms</span>: <a href="/AlarmList"><span class="type">AlarmList</span></a>, <span class="variable">index</span>: <span class="type">Int</span>, <span class="variable">filename</span>: <span class="type">String</span>, <span class="variable">soundList</span>: <span class="keyword">inout</span> [<span class="type">String</span>:<span class="type">String</span>])  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Schedules a local notification using the specified alarm parameters.</p>
+
+</div>
+<div class="discussion">
+    <p>The notification includes a title, body, and custom sound. The function updates the provided sound list
+to associate the notification identifier with the sound file. The trigger is configured using date components
+from the alarm.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>id</th>
+    <td><code class="type">String</code></td>
+    <td><p>A unique identifier for the notification.</p>
+</td>
+</tr>
+<tr>
+    <th>alarms</th>
+    <td><code class="type">Alarm​List</code></td>
+    <td><p>An <code>AlarmList</code> instance containing alarm details.</p>
+</td>
+</tr>
+<tr>
+    <th>index</th>
+    <td><code class="type">Int</code></td>
+    <td><p>The index of the alarm within the <code>alarms</code> arrays.</p>
+</td>
+</tr>
+<tr>
+    <th>filename</th>
+    <td><code class="type">String</code></td>
+    <td><p>The name of the sound file (with extension) to play when the notification triggers.</p>
+</td>
+</tr>
+<tr>
+    <th>sound​List</th>
+    <td><code class="type">inout [String:​String]</code></td>
+    <td><p>An inout dictionary mapping notification identifiers to sound filenames.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2025-02-09T22:45:59+0700">February 9, 2025</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+</p>
+    </footer>
+</body>
+</html>

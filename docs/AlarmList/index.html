@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepyBell - AlarmList</title>
+    <link rel="stylesheet" type="text/css" href="/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/">
+            <strong>
+                SleepyBell
+            </strong>
+            <span>Documentation</span>
+        </a>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#alarmlist.idlist">id​List</a></li><li class="variable"><a href="#alarmlist.primarylist">primary​List</a></li><li class="variable"><a href="#alarmlist.seclist">sec​List</a></li><li class="variable"><a href="#alarmlist.minlist">min​List</a></li><li class="variable"><a href="#alarmlist.hourlist">hour​List</a></li><li class="variable"><a href="#alarmlist.daylist">day​List</a></li><li class="variable"><a href="#alarmlist.realhourlist">real​Hour​List</a></li><li class="variable"><a href="#alarmlist.mornlist">morn​List</a></li><li class="variable"><a href="#alarmlist.difflist">diff​List</a></li><li class="variable"><a href="#alarmlist.layout">layout</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#alarmlist.removelastall()">remove​Last​All()</a></li><li class="function"><a href="#alarmlist.removeeverything()">remove​Everything()</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Structure</small>
+    <code class="name">Alarm​List</code>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">struct</span> <span class="type">AlarmList</span>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A model that represents a list of alarms.</p>
+
+</div>
+<div class="discussion">
+    <p><code>AlarmList</code> holds arrays for alarm identifiers and time components (seconds, minutes, hours, and AM/PM).
+It provides computed properties for generating formatted labels, converting hours to a 24-hour format,
+classifying alarms as morning or night, calculating time differences between alarms, and producing a
+formatted layout string for display.</p>
+
+</div>
+
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="alarmlist.idlist">
+    <h3>
+        <code><a href="#alarmlist.idlist">id​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">idList</span>: [<span class="type">Int</span>] = [] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>An array of alarm identifiers.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.primarylist">
+    <h3>
+        <code><a href="#alarmlist.primarylist">primary​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">primaryList</span>: [<span class="type">String</span>]  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A computed array of alarm type labels.</p>
+
+</div>
+<div class="discussion">
+    <p>The first alarm is labeled &quot;Primary&quot; and subsequent alarms are labeled &quot;Secondary&quot;.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.seclist">
+    <h3>
+        <code><a href="#alarmlist.seclist">sec​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">secList</span>: [<span class="type">Int</span>] = [] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>An array of seconds for each alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.minlist">
+    <h3>
+        <code><a href="#alarmlist.minlist">min​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">minList</span>: [<span class="type">Int</span>] = [] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>An array of minutes for each alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.hourlist">
+    <h3>
+        <code><a href="#alarmlist.hourlist">hour​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">hourList</span>: [<span class="type">Int</span>] = [] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>An array of hours for each alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.daylist">
+    <h3>
+        <code><a href="#alarmlist.daylist">day​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">dayList</span>: [<span class="type">String</span>] = [] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>An array of day indicators (&quot;AM&quot;/&quot;PM&quot;) for each alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.realhourlist">
+    <h3>
+        <code><a href="#alarmlist.realhourlist">real​Hour​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">realHourList</span>: [<span class="type">Int</span>]  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A computed array of converted hours in 24-hour format.</p>
+
+</div>
+<div class="discussion">
+    <p>For each alarm, if the day is &quot;AM&quot; and the hour is 12, it is converted to 24;
+otherwise, for &quot;PM&quot; the hour is increased by 12 (unless it's 12 already).</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.mornlist">
+    <h3>
+        <code><a href="#alarmlist.mornlist">morn​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">mornList</span>: [<span class="type">String</span>]  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A computed array classifying each alarm as &quot;Morning&quot; or &quot;Night&quot;.</p>
+
+</div>
+<div class="discussion">
+    <p>An alarm is considered &quot;Morning&quot; if its converted hour is between 6 (inclusive) and 18 (exclusive);
+otherwise, it is considered &quot;Night&quot;.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.difflist">
+    <h3>
+        <code><a href="#alarmlist.difflist">diff​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">diffList</span>: [<span class="type">Int</span>]  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A computed array of time differences (in seconds) between consecutive alarms.</p>
+
+</div>
+<div class="discussion">
+    <p>For the first alarm, the difference is 0. For subsequent alarms, the difference is calculated based on
+the difference in hours, minutes, and seconds between the current and previous alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="alarmlist.layout">
+    <h3>
+        <code><a href="#alarmlist.layout">layout</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">layout</span>: [<span class="type">String</span>]  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A computed array that returns formatted time strings for each alarm.</p>
+
+</div>
+<div class="discussion">
+    <p>The time is formatted with appropriate zero padding for hours, minutes, and seconds.</p>
+
+</div>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="alarmlist.removelastall()">
+    <h3>
+        <code><a href="#alarmlist.removelastall()">remove​Last​All()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">mutating</span> <span class="keyword">func</span> <span class="function">removeLastAll</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Removes the last alarm entry from all alarm arrays.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="alarmlist.removeeverything()">
+    <h3>
+        <code><a href="#alarmlist.removeeverything()">remove​Everything()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">mutating</span> <span class="keyword">func</span> <span class="function">removeEverything</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Clears all alarms from all arrays.</p>
+
+</div>
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2025-02-09T22:46:01+0700">February 9, 2025</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+</p>
+    </footer>
+</body>
+</html>

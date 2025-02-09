@@ -9,22 +9,46 @@ import SwiftUI
 @_spi(Advanced) import SwiftUIIntrospect
 import Charts
 
+// MARK: - SleepEventType
+
+/// An enumeration representing the two types of sleep events.
+///
+/// - gotUp: The event when the user has successfully woken up for the day.
+/// - wokeButSlept: The event when the user woke up but then went back to sleep.
 enum SleepEventType: String {
     case gotUp = "Got Up for the Day"
     case wokeButSlept = "Woke but Went Back to Sleep"
 }
 
+// MARK: - DayHour
+
+/// A simple model that represents a specific hour within a particular day.
+///
+/// This struct is used as a key for grouping sleep events into hourly bins.
 struct DayHour: Hashable {
+    /// The day (as a Date) representing the start of the day.
     let day: Date
+    /// The hour (0 to 23) of the day.
     let hour: Int
 }
 
+// MARK: - SleepEvent
+
+/// A model representing an individual sleep-related event.
+///
+/// Each event records the full date and time it occurred and its type (e.g., whether the user got up or went back to sleep).
+/// The struct conforms to `Identifiable` for use in SwiftUI lists and charts.
 struct SleepEvent: Identifiable {
+    /// A unique identifier for the event.
     let id = UUID()
-    let date: Date         // full date + time of event
+    /// The full date and time when the event occurred.
+    let date: Date
+    /// The type of sleep event.
     let eventType: SleepEventType
     
-    /// Computed property to get the time-of-day (in seconds after midnight)
+    /// A computed property that returns the number of seconds elapsed since midnight for the event's time.
+    ///
+    /// This is calculated from the hour, minute, and second components of the event's date.
     var secondsFromMidnight: Int {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.hour, .minute, .second], from: date)
@@ -34,40 +58,74 @@ struct SleepEvent: Identifiable {
     }
 }
 
-/// A new model for aggregated (binned) heat map data.
+// MARK: - SleepHeatMapData
+
+/// A model representing aggregated (binned) sleep event data for heat map visualization.
+///
+/// Each instance corresponds to a specific hour on a specific day and records how many events occurred in that bin.
 struct SleepHeatMapData: Identifiable {
+    /// A unique identifier for the heat map cell.
     let id = UUID()
-    let day: Date      // For simplicity, the start of day
-    let hour: Int      // The hour of the day (0...23)
-    let count: Int     // How many events occurred in that bin
+    /// The day for the cell (typically the start of the day).
+    let day: Date
+    /// The hour of the day (0...23) that this cell represents.
+    let hour: Int
+    /// The number of sleep events that occurred during that hour.
+    let count: Int
 }
 
+// MARK: - Statistics View
+
+/// A view that displays statistics about the user's sleeping habits.
+///
+/// This view shows lists of sleep and wake times, a scatter plot of sleep events,
+/// a heat map of aggregated sleep events, and controls for generating dummy data.
+/// The view is presented as a draggable form with zoom and pan interactions for charts.
 struct Statistics: View {
     
+    // MARK: - Bindings
+    
+    /// A binding indicating whether the statistics form is currently shown.
     @Binding var showForm: Bool
+    /// A binding to an array of date strings corresponding to sleep events.
     @Binding var sleepDateList: [String]
+    /// A binding to an array of date strings corresponding to wake events.
     @Binding var wakeDateList: [String]
+    /// A binding to an array of time strings when the user went back to sleep.
     @Binding var sleepList: [String]
+    /// A binding to an array of time strings when the user woke up.
     @Binding var wakeList: [String]
     
-    @State private var offsetY: CGFloat = 400  // Start hidden below screen
-    @State private var lastOffset: CGFloat = 400 // Store last position to prevent jumps
-    @State private var dragOffset: CGFloat = 0     // Track user movement
+    // MARK: - Drag & Layout State
+    
+    /// The vertical offset for the view (starts hidden below the screen).
+    @State private var offsetY: CGFloat = 400
+    /// Stores the last offset value to prevent abrupt jumps during dragging.
+    @State private var lastOffset: CGFloat = 400
+    /// The dynamic drag offset applied during user interaction.
+    @State private var dragOffset: CGFloat = 0
     
     // MARK: - Chart Zoom & Pan State
+    
+    /// The current scale factor for zooming the chart.
     @State private var chartScale: CGFloat = 1.0
+    /// The cumulative scale factor for the chart.
     @State private var cumulativeChartScale: CGFloat = 1.0
+    /// The current drag offset for panning the chart.
     @State private var chartDragOffset: CGSize = .zero
+    /// The cumulative drag offset for the chart.
     @State private var cumulativeChartDragOffset: CGSize = .zero
     
+    /// The stride value used to generate Y-axis tick marks in the chart.
     @State private var yAxisStride: Int = 6000
     
+    /// A flag to enable the use of dummy data instead of real data.
     @State private var enableDummyData: Bool = false
     
-    // For testing purposes
-    // MARK: - arr1: 100 scattered time strings (mix of AM/PM)
-    // This array includes the 10 common time strings (highlighted below)
-    // that should also appear in arr2.
+    // MARK: - Dummy Data Arrays
+    // These arrays provide pre-generated time and date strings for testing purposes.
+    
+    /// An array of 100 scattered time strings representing sleep times (with 10 common values shared with arr2).
     @State private var arr1: [String] = [
       "10:37:29 AM", "03:27:13 AM", "11:42:07 AM", "07:15:32 AM", "01:59:45 AM",
       "12:34:56 AM", "05:22:10 AM", "09:12:45 AM", "02:05:59 AM", "06:33:22 AM",
@@ -77,44 +135,42 @@ struct Statistics: View {
       // common: "11:11:11 AM"
       "11:11:11 AM",
       "03:03:21 AM", "10:10:10 AM", "01:01:01 AM", "09:09:09 AM", "06:50:00 AM",
-      // common: "09:45:20 AM" (replacing a different value)
+      // common: "09:45:20 AM"
       "09:45:20 AM",
       "05:45:30 AM", "12:00:01 AM", "08:20:15 AM", "04:55:05 AM", "03:33:33 AM",
       "11:23:59 AM", "02:46:30 AM", "06:06:06 AM", "09:38:21 AM",
-      // common: "10:30:10 PM" (inserted in place of "10:47:58 AM")
+      // common: "10:30:10 PM"
       "10:30:10 PM",
       "01:12:34 AM", "12:59:59 AM", "05:10:10 AM", "08:30:45 AM", "07:28:37 AM",
       "04:20:20 AM", "03:40:50 AM", "11:05:15 AM", "06:27:27 AM",
-      // common: "12:00:00 PM" (inserted here)
+      // common: "12:00:00 PM"
       "12:00:00 PM",
       "09:49:55 AM", "10:03:17 AM", "01:15:15 AM", "12:12:12 AM", "05:55:55 AM",
       "08:08:08 AM", "07:36:36 AM", "04:42:42 AM", "03:21:21 AM",
-      // common: "01:23:45 PM" (inserted here)
+      // common: "01:23:45 PM"
       "01:23:45 PM",
       "06:18:18 AM", "02:22:22 AM", "09:44:44 AM", "10:27:27 AM", "01:38:38 AM",
       "12:49:49 AM", "05:03:03 AM", "08:16:16 AM", "04:29:29 AM", "07:52:52 AM",
       "03:15:15 AM", "11:23:23 AM", "06:37:37 AM", "02:41:41 AM", "09:56:56 AM",
       "10:08:08 AM", "01:20:20 AM", "12:34:34 AM", "05:47:47 AM", "08:03:03 AM",
-      // common: "04:56:34 AM" (inserted in place of "07:30:30 AM")
+      // common: "04:56:34 AM"
       "04:56:34 AM",
       "04:17:17 AM", "03:44:44 AM", "11:02:02 AM", "06:16:16 AM", "02:30:30 AM",
       "09:55:55 AM", "10:14:14 AM", "01:28:28 AM", "12:42:42 AM", "05:56:56 AM",
       "08:10:10 AM", "04:24:24 AM", "07:38:38 AM", "03:52:52 AM", "11:06:06 AM",
       "06:20:20 AM",
-      // common: "02:34:56 AM" (ensured here)
+      // common: "02:34:56 AM"
       "02:34:56 AM",
       "09:48:48 AM",
-      // common: "07:07:07 PM" (inserted in place of "10:02:02 AM")
+      // common: "07:07:07 PM"
       "07:07:07 PM",
       "01:16:16 AM", "12:30:30 AM", "05:44:44 AM", "08:58:58 AM", "04:12:12 AM",
       "07:26:26 AM", "03:40:40 AM", "11:54:54 AM", "06:08:08 AM",
-      // common: "03:21:09 PM" (inserted at the end)
+      // common: "03:21:09 PM"
       "03:21:09 PM"
     ]
-
-    // MARK: - arr2: 100 scattered time strings (mix of AM/PM)
-    // This array also contains the same 10 common time strings (in exactly the same form)
-    // so that arr1 and arr2 overlap.
+    
+    /// An array of 100 scattered time strings representing wake times (with the same 10 common values as arr1).
     @State private var arr2: [String] = [
       "03:11:22 PM", "08:55:44 AM", "12:22:33 PM", "05:44:55 PM", "09:33:21 AM",
       "11:17:29 PM", "04:07:08 AM",
@@ -140,7 +196,7 @@ struct Statistics: View {
       "02:33:33 PM", "03:43:43 AM", "04:53:53 PM", "05:03:03 AM", "06:13:13 PM",
       "07:23:23 AM", "08:33:33 PM", "09:43:43 AM", "10:53:53 PM", "11:07:07 PM",
       "12:17:17 AM", "01:27:27 PM",
-      // common: "02:34:56 AM" (replacing a nearby value)
+      // common: "02:34:56 AM"
       "02:34:56 AM",
       "03:47:47 PM", "04:57:57 AM", "05:07:07 PM", "06:17:17 AM", "07:27:27 PM",
       "08:37:37 AM", "09:47:47 PM", "10:57:57 AM",
@@ -152,7 +208,7 @@ struct Statistics: View {
       "11:11:11 PM", "12:21:21 AM", "01:31:31 PM", "02:41:41 PM", "03:51:51 AM",
       "04:01:01 PM", "05:11:11 AM", "06:21:21 PM", "07:31:31 AM", "08:41:41 PM",
       "09:51:51 AM", "10:01:01 PM",
-      // common: "11:11:11 AM" (again, as duplicate is allowed)
+      // common: "11:11:11 AM" (duplicate allowed)
       "11:11:11 AM",
       "12:01:01 PM", "01:11:11 AM", "02:21:21 PM", "03:31:31 AM", "04:41:41 PM",
       "05:51:51 AM", "06:01:01 PM", "07:21:21 AM", "08:31:31 PM", "09:41:41 AM",
@@ -162,9 +218,9 @@ struct Statistics: View {
       // common: "04:56:34 AM"
       "04:56:34 AM"
     ]
-
-    // MARK: - arr3: 100 scattered date strings ("yyyy-mm-dd")
-    // This array includes the 10 common date strings (below) that will also appear in arr4.
+    
+    /// An array of 100 scattered date strings in the "yyyy-MM-dd" format for wake dates,
+    /// with 10 common dates shared with arr4.
     @State private var arr3: [String] = [
       "2025-03-15", "2021-11-04", "2023-06-29", "2022-01-12", "2020-07-23",
       "2024-12-31", "2021-04-05", "2023-09-17",
@@ -205,43 +261,33 @@ struct Statistics: View {
       "2025-06-06", "2020-10-10", "2024-01-01", "2021-07-07", "2023-08-08",
       "2022-04-04", "2025-05-15", "2020-11-11"
     ]
-
-    // MARK: - arr4: 100 scattered date strings ("yyyy-mm-dd")
-    // We now force overlap with arr3 by ensuring the same 10 common date strings appear here too.
-    // (In this arr4 the values are arbitrarily chosen from various years.)
+    
+    /// An array of 100 scattered date strings in the "yyyy-MM-dd" format for sleep dates,
+    /// with 10 common dates shared with arr3.
     @State private var arr4: [String] = [
-      // Replace some entries with the common dates:
-      // common: "2022-08-08"
+      // Common dates interleaved with random ones:
       "2022-08-08",
       "2020-12-11", "2019-07-04", "2021-03-19", "2018-11-30",
-      // common: "2025-06-06"
       "2025-06-06",
       "2019-04-22", "2021-09-08", "2018-08-16", "2020-06-06", "2019-12-25",
       "2021-11-11", "2018-02-14", "2020-03-03", "2019-10-10",
-      // common: "2021-07-07"
       "2021-07-07",
       "2018-09-09", "2020-04-04", "2019-05-05",
-      // common: "2021-01-01" is already common in arr3; here we replace an element:
       "2021-01-01",
       "2018-06-15", "2020-08-08", "2019-11-11", "2021-02-02", "2018-10-10",
       "2020-11-11", "2019-03-03", "2021-05-05", "2018-12-31",
-      // common: "2020-07-07"
       "2020-07-07",
       "2019-01-01", "2021-04-04", "2024-09-09", "2020-09-09", "2019-06-06",
       "2021-10-10", "2018-03-03",
-      // common: "2023-11-11" (inserted here)
       "2023-11-11",
       "2019-08-08", "2021-12-12", "2018-07-07", "2020-05-05", "2019-09-09",
       "2021-06-06", "2018-01-01", "2020-02-02", "2019-02-02", "2021-08-08",
       "2018-11-11",
-      // common: "2024-01-01" (inserted here)
       "2024-01-01",
       "2019-04-04", "2021-03-03", "2018-08-08", "2020-01-01", "2019-07-07",
       "2021-05-05", "2018-09-09", "2020-03-03",
-      // common: "2023-05-05" (inserted here)
       "2023-05-05",
       "2021-07-07", "2018-06-06", "2020-08-08", "2019-12-12",
-      // common: "2025-01-01" (inserted here)
       "2025-01-01",
       "2018-05-05", "2020-11-11", "2019-03-03", "2021-04-04", "2018-10-10",
       "2020-07-07", "2019-01-01", "2021-09-09", "2018-04-14", "2020-09-19",
@@ -252,15 +298,23 @@ struct Statistics: View {
       "2019-07-29", "2021-05-19", "2018-09-15", "2020-03-27", "2019-10-23",
       "2021-07-31"
     ]
-
-
     
+    // MARK: - Chart Configuration
+    
+    /// The maximum Y-axis value representing the total number of seconds in a day.
     let maxYValue = 86400
     
+    /// A computed property that returns an array of integers to be used as tick values for the Y-axis.
     var computedYAxisValues: [Int] {
         Array(stride(from: 0, to: maxYValue, by: yAxisStride))
     }
     
+    // MARK: - Sleep Event Data
+    
+    /// Computes an array of `SleepEvent` instances based on either real or dummy data.
+    ///
+    /// If dummy data is enabled, the view uses the pre-generated arrays (`arr1`, `arr2`, `arr3`, `arr4`);
+    /// otherwise, it uses the bound `wakeList`, `sleepList`, `wakeDateList`, and `sleepDateList`.
     var sleepEvents: [SleepEvent] {
         var events: [SleepEvent] = []
         var wakeTemp: [String]
@@ -280,14 +334,14 @@ struct Statistics: View {
             sleepDateTemp = arr4
         }
         
-        // Process "got up" events (will be shown in blue)
+        // Process "got up" events (displayed in blue)
         for (dateStr, timeStr) in zip(wakeDateTemp, wakeTemp) {
             if let date = makeDate(date: dateStr, time: timeStr) {
                 events.append(SleepEvent(date: date, eventType: .gotUp))
             }
         }
         
-        // Process "woke but went back to sleep" events (will be shown in red)
+        // Process "woke but went back to sleep" events (displayed in red)
         for (dateStr, timeStr) in zip(sleepDateTemp, sleepTemp) {
             if let date = makeDate(date: dateStr, time: timeStr) {
                 events.append(SleepEvent(date: date, eventType: .wokeButSlept))
@@ -296,8 +350,12 @@ struct Statistics: View {
         return events
     }
     
-    /// Combines a date string (e.g., "2025-01-01") and a time string (e.g., "07:00:00 AM")
-    /// into a Date object.
+    /// Combines a date string and a time string into a `Date` object.
+    ///
+    /// - Parameters:
+    ///   - date: A string representing the date in "yyyy-MM-dd" format.
+    ///   - time: A string representing the time in "hh:mm:ss AM/PM" format.
+    /// - Returns: A `Date` object if the conversion succeeds; otherwise, `nil`.
     func makeDate(date: String, time: String) -> Date? {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX") // Ensure consistent parsing
@@ -305,7 +363,13 @@ struct Statistics: View {
         return formatter.date(from: "\(date) \(time)")
     }
     
-    /// A helper to aggregate your SleepEvent data into hourly bins.
+    /// Aggregates sleep events into hourly bins for heat map visualization.
+    ///
+    /// This function groups the provided sleep events by the start of the day and the hour,
+    /// then returns an array of `SleepHeatMapData` instances representing the count of events in each bin.
+    ///
+    /// - Parameter events: An array of `SleepEvent` instances.
+    /// - Returns: An array of aggregated `SleepHeatMapData`.
     func aggregateSleepEventsToHeatMapData(_ events: [SleepEvent]) -> [SleepHeatMapData] {
         let calendar = Calendar.current
         // Group events by day (startOfDay) and hour.
@@ -320,42 +384,47 @@ struct Statistics: View {
         }
     }
     
+    /// A computed property returning the heat map data by aggregating the sleep events.
     var heatData: [SleepHeatMapData] {
         aggregateSleepEventsToHeatMapData(sleepEvents)
     }
     
+    // MARK: - Dummy Data Generation
+    
     /// Generates a random time string in the "hh:mm:ss AM/PM" format.
+    ///
+    /// - Returns: A random time string.
     func randomTimeString() -> String {
-        // Hours in 12-hour format: 1 to 12.
         let hour = Int.random(in: 1...12)
-        // Minutes and seconds: 0 to 59.
         let minute = Int.random(in: 0...59)
         let second = Int.random(in: 0...59)
-        // Randomly choose between AM and PM.
         let period = Bool.random() ? "AM" : "PM"
         return String(format: "%02d:%02d:%02d %@", hour, minute, second, period)
     }
-
+    
     /// Generates a random date string in the "yyyy-MM-dd" format.
-    /// To keep it simple, the day is chosen from 1 to 28 to avoid invalid dates.
+    ///
+    /// The day is chosen from 1 to 28 to avoid invalid dates.
+    ///
+    /// - Returns: A random date string.
     func randomDateString() -> String {
         let year = Int.random(in: 2000...2030)
         let month = Int.random(in: 1...12)
         let day = Int.random(in: 1...28)
         return String(format: "%04d-%02d-%02d", year, month, day)
     }
-
-    // MARK: - Main Function to Generate Arrays
-
-    /// Generates 4 arrays with random, scattered data.
-    /// - Returns: A tuple containing:
-    ///   - arr1: 100 random time strings (scattered), including 10 common ones.
-    ///   - arr2: 100 random time strings (scattered), including the same 10 common ones as arr1.
-    ///   - arr3: 100 random date strings (scattered), including 10 common ones.
-    ///   - arr4: 100 random date strings (scattered), including the same 10 common ones as arr3.
+    
+    /// Generates four arrays containing random scattered data for dummy time and date values.
+    ///
+    /// The returned tuple consists of:
+    ///   - arr1: 100 random time strings (including 10 common ones).
+    ///   - arr2: 100 random time strings (with the same 10 common ones as arr1).
+    ///   - arr3: 100 random date strings (including 10 common ones).
+    ///   - arr4: 100 random date strings (with the same 10 common ones as arr3).
+    ///
+    /// - Returns: A tuple with four arrays of strings.
     func generateScatteredData() -> (arr1: [String], arr2: [String], arr3: [String], arr4: [String]) {
-        
-        // Generate 10 common time strings
+        // Generate 10 common time strings.
         var commonTimes = [String]()
         for _ in 0..<10 {
             commonTimes.append(randomTimeString())
@@ -369,7 +438,7 @@ struct Statistics: View {
         arr1.append(contentsOf: commonTimes)
         arr1.shuffle()
         
-        // Create arr2: 90 random time strings + same 10 common times, then shuffle.
+        // Create arr2: 90 random time strings + the same 10 common times, then shuffle.
         var arr2 = [String]()
         for _ in 0..<90 {
             arr2.append(randomTimeString())
@@ -377,7 +446,7 @@ struct Statistics: View {
         arr2.append(contentsOf: commonTimes)
         arr2.shuffle()
         
-        // Generate 10 common date strings
+        // Generate 10 common date strings.
         var commonDates = [String]()
         for _ in 0..<10 {
             commonDates.append(randomDateString())
@@ -391,7 +460,7 @@ struct Statistics: View {
         arr3.append(contentsOf: commonDates)
         arr3.shuffle()
         
-        // Create arr4: 90 random date strings + same 10 common dates, then shuffle.
+        // Create arr4: 90 random date strings + the same 10 common dates, then shuffle.
         var arr4 = [String]()
         for _ in 0..<90 {
             arr4.append(randomDateString())
@@ -401,9 +470,12 @@ struct Statistics: View {
         
         return (arr1, arr2, arr3, arr4)
     }
-
+    
+    // MARK: - View Body
+    
     var body: some View {
         VStack {
+            // A draggable capsule indicator at the top.
             Capsule()
                 .frame(width: 50, height: 5)
                 .foregroundColor(.gray.opacity(0.8))
@@ -411,7 +483,7 @@ struct Statistics: View {
             
             NavigationStack {
                 Form {
-                    
+                    // MARK: About Section
                     Section {
                         Text("This is where you can see vital statistics regarding your sleeping habits based on how you react to the scheduled alarms.")
                         Text("Blue corresponds to times when you have woken up successfully.")
@@ -424,6 +496,7 @@ struct Statistics: View {
                             .fontWeight(.bold)
                     }
                     
+                    // MARK: Sleep Times Section
                     Section {
                         ForEach(Array(zip(sleepList, sleepDateList).enumerated()), id: \.offset) { index, pair in
                             HStack {
@@ -444,6 +517,7 @@ struct Statistics: View {
                             .fontWeight(.bold)
                     }
                     
+                    // MARK: Wake Times Section
                     Section {
                         ForEach(Array(zip(wakeList, wakeDateList).enumerated()), id: \.offset) { index, pair in
                             HStack {
@@ -464,19 +538,21 @@ struct Statistics: View {
                             .fontWeight(.bold)
                     }
                     
+                    // MARK: Scatter Plot Section
                     Section {
-                        // Wrap the Chart with zoom and pan modifiers.
+                        // Display a scatter plot chart of sleep events.
                         Chart {
                             ForEach(sleepEvents) { event in
                                 PointMark(
                                     x: .value("Date", event.date, unit: .day),
                                     y: .value("Time (seconds)", event.secondsFromMidnight)
                                 )
-                                // Differentiate the events by color and symbol.
+                                // Differentiate events by color and symbol based on the event type.
                                 .foregroundStyle(event.eventType == .gotUp ? .blue : .red)
                                 .symbol(event.eventType == .gotUp ? .circle : .square)
                             }
                         }
+                        // Customize the Y-axis using computed tick values.
                         .chartYAxis {
                             AxisMarks(values: computedYAxisValues) { value in
                                 if let seconds = value.as(Int.self) {
@@ -491,6 +567,7 @@ struct Statistics: View {
                             }
                         }
                         .chartYScale(domain: 0...maxYValue)
+                        // Customize the X-axis to display dates.
                         .chartXAxis {
                             AxisMarks(values: .automatic) { value in
                                 let labelText: String = {
@@ -507,11 +584,11 @@ struct Statistics: View {
                             }
                         }
                         .frame(height: 300)
-                        // Apply zoom (scale) and pan (offset) effects.
+                        // Apply zoom and pan effects to the chart.
                         .scaleEffect(cumulativeChartScale * chartScale)
                         .offset(x: cumulativeChartDragOffset.width + chartDragOffset.width,
                                 y: cumulativeChartDragOffset.height + chartDragOffset.height)
-                        // Attach the magnification (pinch) gesture.
+                        // Magnification gesture for zooming.
                         .gesture(
                             MagnificationGesture()
                                 .onChanged { value in
@@ -522,7 +599,7 @@ struct Statistics: View {
                                     chartScale = 1.0
                                 }
                         )
-                        // Attach the drag (pan) gesture simultaneously.
+                        // Drag gesture for panning.
                         .simultaneousGesture(
                             DragGesture()
                                 .onChanged { value in
@@ -534,12 +611,14 @@ struct Statistics: View {
                                     chartDragOffset = .zero
                                 }
                         )
+                        // Button to reset the chart zoom and pan.
                         Button("Reset Chart") {
                             chartScale = 1.0
                             cumulativeChartScale = 1.0
                             chartDragOffset = .zero
                             cumulativeChartDragOffset = .zero
                         }
+                        // Slider to adjust the Y-axis stride (tick interval).
                         VStack {
                             Text("Y-Axis Stride: \(yAxisStride)")
                             Slider(value: Binding(
@@ -558,16 +637,18 @@ struct Statistics: View {
                             .fontWeight(.bold)
                     }
                     
+                    // MARK: Heat Map Section
                     Section {
+                        // Display a heat map chart of aggregated sleep events.
                         Chart(heatData) { cell in
                             BarMark(
-                                       x: .value("Day", cell.day),
-                                       y: .value("Hour", cell.hour)
-                                   )
-                            // Map the cell's count to a color.
+                                x: .value("Day", cell.day),
+                                y: .value("Hour", cell.hour)
+                            )
+                            // The bar color represents the count of events.
                             .foregroundStyle(by: .value("Count", cell.count))
                         }
-                        // Define a continuous color scale (adjust the colors as desired).
+                        // Define a continuous color scale ranging from blue to red.
                         .chartForegroundStyleScale(
                             range: Gradient(colors: [.blue, .red])
                         )
@@ -578,6 +659,7 @@ struct Statistics: View {
                             .fontWeight(.bold)
                     }
                     
+                    // MARK: Dummy Data Section
                     Section {
                         Toggle(isOn: $enableDummyData) {
                             Text("Enable Dummy Data")
@@ -593,38 +675,44 @@ struct Statistics: View {
                     
                 }
                 .navigationTitle("Statistics")
-                .scrollContentBackground(.hidden) // Hide form background
+                // Hide the default form background.
+                .scrollContentBackground(.hidden)
             }
+            // Customize the navigation stack's background using SwiftUIIntrospect.
             .introspect(.navigationStack, on: .iOS(.v16...)) { navigationStack in
                 navigationStack.viewControllers.forEach { controller in
                     controller.view.backgroundColor = .clear
                 }
             }
         }
+        // Expand the view to fill the screen.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.ultraThinMaterial) // Transparent blur effect
+        // Apply a transparent blur effect as the background.
+        .background(.ultraThinMaterial)
         .ignoresSafeArea()
-        .offset(y: offsetY + dragOffset)  // Combine base offset with drag movement for the overall view.
+        // Combine the base vertical offset with the current drag offset.
+        .offset(y: offsetY + dragOffset)
+        // Attach a drag gesture to enable dismissing the form.
         .gesture(
             DragGesture()
                 .onChanged { gesture in
-                    dragOffset = gesture.translation.height // Move dynamically.
+                    dragOffset = gesture.translation.height
                 }
                 .onEnded { _ in
                     let newOffset = offsetY + dragOffset
                     
-                    if newOffset > 250 {  // Close form if dragged down far.
+                    if newOffset > 250 {  // Dismiss the form if dragged down sufficiently.
                         withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                             offsetY = UIScreen.main.bounds.height
                             showForm = false
                         }
-                    } else {  // Snap back up if not dragged far enough.
+                    } else {  // Otherwise, snap back into position.
                         withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                             offsetY = 0
                         }
                     }
                     
-                    dragOffset = 0  // Reset the drag movement.
+                    dragOffset = 0  // Reset the drag offset.
                 }
         )
         .onAppear {

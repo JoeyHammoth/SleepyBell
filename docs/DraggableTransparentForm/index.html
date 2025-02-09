@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepyBell - DraggableTransparentForm</title>
+    <link rel="stylesheet" type="text/css" href="/all.css" media="all" />
+</head>
+<body>
+    <header>
+        <a href="/">
+            <strong>
+                SleepyBell
+            </strong>
+            <span>Documentation</span>
+        </a>
+    </header>
+
+    <!--
+    <form class="search">
+        <input type="search" placeholder="Search" />
+    </form>
+    -->
+
+    <nav>
+        <div class="wrapper">
+            <h2>On This Page</h2>
+            <ol><li><a href="#relationships">Relationships</a><ul><li><a href="#relationships">Conforms To</a></li></ul></li><li><a href="#properties">Properties</a><ul><li class="variable"><a href="#draggabletransparentform.daynightlist">day​Night​List</a></li><li class="variable"><a href="#draggabletransparentform.primlist">prim​List</a></li><li class="variable"><a href="#draggabletransparentform.soundlist">sound​List</a></li><li class="variable"><a href="#draggabletransparentform.mode">mode</a></li><li class="variable"><a href="#draggabletransparentform.showform">show​Form</a></li><li class="variable"><a href="#draggabletransparentform.alertbool">alert​Bool</a></li><li class="variable"><a href="#draggabletransparentform.alarms">alarms</a></li><li class="variable"><a href="#draggabletransparentform.clearalertbool">clear​Alert​Bool</a></li><li class="variable"><a href="#draggabletransparentform.sounddict">sound​Dict</a></li><li class="variable"><a href="#draggabletransparentform.offsety">offset​Y</a></li><li class="variable"><a href="#draggabletransparentform.lastoffset">last​Offset</a></li><li class="variable"><a href="#draggabletransparentform.dragoffset">drag​Offset</a></li><li class="variable"><a href="#draggabletransparentform.sec">sec</a></li><li class="variable"><a href="#draggabletransparentform.min">min</a></li><li class="variable"><a href="#draggabletransparentform.hour">hour</a></li><li class="variable"><a href="#draggabletransparentform.day">day</a></li><li class="variable"><a href="#draggabletransparentform.sound">sound</a></li><li class="variable"><a href="#draggabletransparentform.morngradcolors">morn​Grad​Colors</a></li><li class="variable"><a href="#draggabletransparentform.nightgradcolors">night​Grad​Colors</a></li><li class="variable"><a href="#draggabletransparentform.audioplayer">audio​Player</a></li><li class="variable"><a href="#draggabletransparentform.isplaying">is​Playing</a></li><li class="variable"><a href="#draggabletransparentform.currenttime">current​Time</a></li><li class="variable"><a href="#draggabletransparentform.duration">duration</a></li><li class="variable"><a href="#draggabletransparentform.timer">timer</a></li><li class="variable"><a href="#draggabletransparentform.body">body</a></li></ul></li><li><a href="#methods">Methods</a><ul><li class="function"><a href="#draggabletransparentform.animategradientmorn()">animate​Gradient​Morn()</a></li><li class="function"><a href="#draggabletransparentform.animategradientnight()">animate​Gradient​Night()</a></li><li class="function"><a href="#draggabletransparentform.setupaudio(filename:)">setup​Audio(filename:​)</a></li><li class="function"><a href="#draggabletransparentform.playsound()">play​Sound()</a></li><li class="function"><a href="#draggabletransparentform.stopsound()">stop​Sound()</a></li><li class="function"><a href="#draggabletransparentform.seektotime(_:)">seek​ToTime(_:​)</a></li><li class="function"><a href="#draggabletransparentform.starttimer()">start​Timer()</a></li><li class="function"><a href="#draggabletransparentform.stoptimer()">stop​Timer()</a></li><li class="function"><a href="#draggabletransparentform.formattime(_:)">format​Time(_:​)</a></li></ul></li></ol>
+        </div>
+    </nav>
+
+    <main>
+        <article>
+            <h1>
+    <small>Structure</small>
+    <code class="name">Draggable​Transparent​Form</code>
+</h1>
+
+<div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">struct</span> <span class="type">DraggableTransparentForm</span>: <span class="type">View</span>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A draggable, transparent form view for managing alarms and audio settings.</p>
+
+</div>
+<div class="discussion">
+    <p>The <code>DraggableTransparentForm</code> provides the following functionality:</p>
+
+<ul>
+<li>
+<p>Displays an &quot;About&quot; section explaining the alarm system.</p>
+</li>
+<li>
+<p>Lists all currently set alarms with a clock face representation.</p>
+</li>
+<li>
+<p>Allows the user to add new alarms by selecting time components and an alarm sound.</p>
+</li>
+<li>
+<p>Integrates an audio player to preview alarm sounds.</p>
+</li>
+<li>
+<p>Provides a section for deleting all alarms.</p>
+</li>
+<li>
+<p>Supports drag gestures to dismiss the form by sliding it vertically.</p>
+</li>
+</ul>
+
+<p>The view uses gradient animations for visual feedback and leverages SwiftUIIntrospect to customize the
+background of the navigation stack.</p>
+
+</div>
+<section id="relationships">
+    <h2 hidden>Relationships</h2>
+        <figure>
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 12.2.1 (20241206.2353)
+ -->
+<!-- Pages: 1 -->
+<svg width="872pt" height="116pt"
+ viewBox="0.00 0.00 872.00 116.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 112)">
+<polygon fill="white" stroke="none" points="-4,4 -4,-112 868,-112 868,4 -4,4"/>
+<!-- DraggableTransparentForm -->
+<g id="node1" class="node structure current">
+<title>DraggableTransparentForm</title>
+<g id="a_node1"><a xlink:href="/DraggableTransparentForm" xlink:title="DraggableTransparentForm">
+<path fill="none" stroke="black" stroke-width="3" d="M528,-108C528,-108 336,-108 336,-108 330,-108 324,-102 324,-96 324,-96 324,-84 324,-84 324,-78 330,-72 336,-72 336,-72 528,-72 528,-72 534,-72 540,-78 540,-84 540,-84 540,-96 540,-96 540,-102 534,-108 528,-108"/>
+<text text-anchor="middle" x="432" y="-85.33" font-family="Menlo" font-size="14.00">DraggableTransparentForm</text>
+</a>
+</g>
+</g>
+<!-- View -->
+<g id="node2" class="node unknown">
+<title>View</title>
+<path fill="none" stroke="black" d="M528,-36C528,-36 336,-36 336,-36 330,-36 324,-30 324,-24 324,-24 324,-12 324,-12 324,-6 330,0 336,0 336,0 528,0 528,0 534,0 540,-6 540,-12 540,-12 540,-24 540,-24 540,-30 534,-36 528,-36"/>
+<text text-anchor="middle" x="432" y="-13.32" font-family="Menlo" font-size="14.00">View</text>
+</g>
+<!-- DraggableTransparentForm&#45;&gt;View -->
+<g id="edge1" class="edge conformsTo">
+<title>DraggableTransparentForm&#45;&gt;View</title>
+<path fill="none" stroke="black" d="M432,-70.61C432,-63.51 432,-55.22 432,-47.39"/>
+<polygon fill="black" stroke="black" points="435.5,-47.58 432,-37.58 428.5,-47.58 435.5,-47.58"/>
+</g>
+</g>
+</svg>
+
+
+    <figcaption hidden>Inheritance graph for DraggableTransparentForm.</figcaption>
+</figure>
+        <h3>Conforms To</h3>
+<dl>
+    <dt class="unknown"><code>View</code></dt>
+</dl>
+</section>
+    <section id="properties">
+        <h2>Properties</h2>
+
+        <div role="article" class="variable" id="draggabletransparentform.daynightlist">
+    <h3>
+        <code><a href="#draggabletransparentform.daynightlist">day​Night​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">let</span> <span class="variable">dayNightList</span> = [<span class="string literal">"</span><span class="string literal">AM</span><span class="string literal">"</span>, <span class="string literal">"</span><span class="string literal">PM</span><span class="string literal">"</span>] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>List of day/night options.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.primlist">
+    <h3>
+        <code><a href="#draggabletransparentform.primlist">prim​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">let</span> <span class="variable">primList</span> = [<span class="string literal">"</span><span class="string literal">Primary</span><span class="string literal">"</span>, <span class="string literal">"</span><span class="string literal">Secondary</span><span class="string literal">"</span>] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>List of alarm type options.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.soundlist">
+    <h3>
+        <code><a href="#draggabletransparentform.soundlist">sound​List</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">let</span> <span class="variable">soundList</span> = [<span class="string literal">"</span><span class="string literal">lottery</span><span class="string literal">"</span>, <span class="string literal">"</span><span class="string literal">alert</span><span class="string literal">"</span>, <span class="string literal">"</span><span class="string literal">classic</span><span class="string literal">"</span>, <span class="string literal">"</span><span class="string literal">morning</span><span class="string literal">"</span>, <span class="string literal">"</span><span class="string literal">rooster</span><span class="string literal">"</span>] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>List of available alarm sounds.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.mode">
+    <h3>
+        <code><a href="#draggabletransparentform.mode">mode</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">Binding</span> <span class="keyword">var</span> <span class="variable">mode</span>: <span class="type">String</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The current mode (e.g., light/dark) of the application.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.showform">
+    <h3>
+        <code><a href="#draggabletransparentform.showform">show​Form</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">Binding</span> <span class="keyword">var</span> <span class="variable">showForm</span>: <span class="type">Bool</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A binding that indicates whether the form is currently shown.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.alertbool">
+    <h3>
+        <code><a href="#draggabletransparentform.alertbool">alert​Bool</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">Binding</span> <span class="keyword">var</span> <span class="variable">alertBool</span>: <span class="type">Bool</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A binding used to trigger an alert if a new alarm is not set properly.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.alarms">
+    <h3>
+        <code><a href="#draggabletransparentform.alarms">alarms</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">Binding</span> <span class="keyword">var</span> <span class="variable">alarms</span>: <a href="/AlarmList"><span class="type">AlarmList</span></a></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A binding to the list of alarms.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.clearalertbool">
+    <h3>
+        <code><a href="#draggabletransparentform.clearalertbool">clear​Alert​Bool</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">Binding</span> <span class="keyword">var</span> <span class="variable">clearAlertBool</span>: <span class="type">Bool</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A binding used to trigger an alert to confirm deletion of all alarms.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.sounddict">
+    <h3>
+        <code><a href="#draggabletransparentform.sounddict">sound​Dict</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">Binding</span> <span class="keyword">var</span> <span class="variable">soundDict</span>: [<span class="type">String</span>:<span class="type">String</span>] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A binding to a dictionary mapping sound names to their configurations.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.offsety">
+    <h3>
+        <code><a href="#draggabletransparentform.offsety">offset​Y</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">offsetY</span>: <span class="type">CGFloat</span> = <span class="number literal">400</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The vertical offset for the form view, used to position the form off-screen initially.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.lastoffset">
+    <h3>
+        <code><a href="#draggabletransparentform.lastoffset">last​Offset</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">lastOffset</span>: <span class="type">CGFloat</span> = <span class="number literal">400</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Stores the last offset value to prevent abrupt jumps during dragging.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.dragoffset">
+    <h3>
+        <code><a href="#draggabletransparentform.dragoffset">drag​Offset</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">dragOffset</span>: <span class="type">CGFloat</span> = <span class="number literal">0</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The dynamic drag offset during user interaction.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.sec">
+    <h3>
+        <code><a href="#draggabletransparentform.sec">sec</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">sec</span>: <span class="type">Int</span> = <span class="number literal">0</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The selected seconds for the new alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.min">
+    <h3>
+        <code><a href="#draggabletransparentform.min">min</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">min</span>: <span class="type">Int</span> = <span class="number literal">0</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The selected minutes for the new alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.hour">
+    <h3>
+        <code><a href="#draggabletransparentform.hour">hour</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">hour</span>: <span class="type">Int</span> = <span class="number literal">1</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The selected hour for the new alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.day">
+    <h3>
+        <code><a href="#draggabletransparentform.day">day</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">day</span>: <span class="type">String</span> = <span class="string literal">"</span><span class="string literal">AM</span><span class="string literal">"</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The selected day indicator (&quot;AM&quot; or &quot;PM&quot;) for the new alarm.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.sound">
+    <h3>
+        <code><a href="#draggabletransparentform.sound">sound</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">sound</span>: <span class="type">String</span> = <span class="string literal">"</span><span class="string literal">lottery</span><span class="string literal">"</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The selected alarm sound.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.morngradcolors">
+    <h3>
+        <code><a href="#draggabletransparentform.morngradcolors">morn​Grad​Colors</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">mornGradColors</span>: [<span class="type">Color</span>] = [<span class="type">Color</span>.<span class="variable">cyan</span>, <span class="variable">Color</span>.<span class="variable">white</span>] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The gradient colors used for morning alarms.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.nightgradcolors">
+    <h3>
+        <code><a href="#draggabletransparentform.nightgradcolors">night​Grad​Colors</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">nightGradColors</span>: [<span class="type">Color</span>] = [<span class="type">Color</span>.<span class="variable">black</span>.<span class="variable">opacity</span>(<span class="number literal">0.5</span>), <span class="variable">Color</span>.<span class="variable">blue</span>.<span class="variable">opacity</span>(<span class="number literal">0.5</span>)] </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The gradient colors used for night alarms.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.audioplayer">
+    <h3>
+        <code><a href="#draggabletransparentform.audioplayer">audio​Player</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">audioPlayer</span>: <span class="type">AVAudioPlayer</span>? </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The audio player used for playing alarm sounds.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.isplaying">
+    <h3>
+        <code><a href="#draggabletransparentform.isplaying">is​Playing</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">isPlaying</span> = <span class="keyword">false</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A Boolean indicating whether the audio is currently playing.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.currenttime">
+    <h3>
+        <code><a href="#draggabletransparentform.currenttime">current​Time</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">currentTime</span>: <span class="type">TimeInterval</span> = <span class="number literal">0</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The current playback time of the audio.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.duration">
+    <h3>
+        <code><a href="#draggabletransparentform.duration">duration</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">duration</span>: <span class="type">TimeInterval</span> = <span class="number literal">1</span></body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The total duration of the audio track.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.timer">
+    <h3>
+        <code><a href="#draggabletransparentform.timer">timer</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="attribute">@</span><span class="type">State</span> <span class="keyword">private</span> <span class="keyword">var</span> <span class="variable">timer</span>: <span class="type">Timer</span>? </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>A timer used to update the playback progress.</p>
+
+</div>
+</div>
+<div role="article" class="variable" id="draggabletransparentform.body">
+    <h3>
+        <code><a href="#draggabletransparentform.body">body</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">var</span> <span class="variable">body</span>: <span class="keyword">some</span> <span class="type">View</span>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>The content and layout of the draggable transparent form.</p>
+
+</div>
+<div class="discussion">
+    <p>The form is composed of multiple sections:</p>
+
+<ul>
+<li>
+<p><strong>About:</strong> A description of the alarm functionality.</p>
+</li>
+<li>
+<p><strong>Alarms List:</strong> A list of current alarms with a clock face representation.</p>
+</li>
+<li>
+<p><strong>Add New Alarm:</strong> Controls for configuring and adding a new alarm, including time pickers, alarm sound selection,
+and an audio player interface.</p>
+</li>
+<li>
+<p><strong>Remove All Alarms:</strong> A button to delete all alarms.</p>
+</li>
+</ul>
+
+<p>The view supports drag gestures to dismiss the form by sliding it vertically.</p>
+
+</div>
+</div>
+    </section>
+    <section id="methods">
+        <h2>Methods</h2>
+
+        <div role="article" class="function" id="draggabletransparentform.animategradientmorn()">
+    <h3>
+        <code><a href="#draggabletransparentform.animategradientmorn()">animate​Gradient​Morn()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">animateGradientMorn</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Animates the gradient colors for morning alarms.</p>
+
+</div>
+<div class="discussion">
+    <p>A timer is scheduled to update <code>mornGradColors</code> every 5 seconds, simulating a transition from morning to noon and back.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="draggabletransparentform.animategradientnight()">
+    <h3>
+        <code><a href="#draggabletransparentform.animategradientnight()">animate​Gradient​Night()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">animateGradientNight</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Animates the gradient colors for night alarms.</p>
+
+</div>
+<div class="discussion">
+    <p>A timer is scheduled to update <code>nightGradColors</code> every 5 seconds, simulating a transition in the evening ambiance.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="draggabletransparentform.setupaudio(filename:)">
+    <h3>
+        <code><a href="#draggabletransparentform.setupaudio(filename:)">setup​Audio(filename:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">setupAudio</span>(<span class="variable">filename</span>: <span class="type">String</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Sets up the audio player with the specified sound file.</p>
+
+</div>
+<div class="discussion">
+    <p>The function attempts to load a <code>.wav</code> file from the app bundle, configures the audio session,
+and prepares the audio player. If the file is not found or an error occurs, an error message is printed.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>filename</th>
+    <td><code class="type">String</code></td>
+    <td><p>The name of the audio file (without extension).</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="draggabletransparentform.playsound()">
+    <h3>
+        <code><a href="#draggabletransparentform.playsound()">play​Sound()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">playSound</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Plays or pauses the audio.</p>
+
+</div>
+<div class="discussion">
+    <p>If the audio is currently playing, it pauses the playback and stops the progress timer.
+If the audio is paused, it resumes playback and starts the progress timer.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="draggabletransparentform.stopsound()">
+    <h3>
+        <code><a href="#draggabletransparentform.stopsound()">stop​Sound()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">stopSound</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Stops the audio playback.</p>
+
+</div>
+<div class="discussion">
+    <p>The function stops the audio, resets the playback time, and stops the progress timer.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="draggabletransparentform.seektotime(_:)">
+    <h3>
+        <code><a href="#draggabletransparentform.seektotime(_:)">seek​ToTime(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">seekToTime</span>(<span class="keyword">_</span> <span class="variable">time</span>: <span class="type">TimeInterval</span>)  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Seeks the audio playback to a specified time.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>time</th>
+    <td><code class="type">Time​Interval</code></td>
+    <td><p>The time (in seconds) to seek to.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+</div>
+<div role="article" class="function" id="draggabletransparentform.starttimer()">
+    <h3>
+        <code><a href="#draggabletransparentform.starttimer()">start​Timer()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">startTimer</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Starts a timer to update the audio playback progress.</p>
+
+</div>
+<div class="discussion">
+    <p>The timer fires every 0.1 seconds, updating the <code>currentTime</code> property with the audio player's current time.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="draggabletransparentform.stoptimer()">
+    <h3>
+        <code><a href="#draggabletransparentform.stoptimer()">stop​Timer()</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">stopTimer</span>()  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Stops the audio progress update timer.</p>
+
+</div>
+</div>
+<div role="article" class="function" id="draggabletransparentform.formattime(_:)">
+    <h3>
+        <code><a href="#draggabletransparentform.formattime(_:)">format​Time(_:​)</a></code>
+    </h3>
+    <div class="declaration">
+<pre class="highlight"><code><html><body><span class="keyword">func</span> <span class="function">formatTime</span>(<span class="keyword">_</span> <span class="variable">time</span>: <span class="type">TimeInterval</span>) -&gt; <span class="type">String</span>  </body></html></code></pre>
+</div>
+<div class="summary" role="doc-abstract">
+    <p>Formats a time interval into a string of the format &quot;MM:SS&quot;.</p>
+
+</div>
+<h4>Parameters</h4>
+
+<table class="parameters">
+  <thead hidden>
+  <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+  </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <th>time</th>
+    <td><code class="type">Time​Interval</code></td>
+    <td><p>The time interval to format.</p>
+</td>
+</tr>
+  </tbody>
+</table>
+  <h4>Returns</h4>
+  <p>A formatted time string.</p>
+
+</div>
+    </section>
+
+
+
+        </article>
+    </main>
+
+    <footer>
+        <p>
+    Generated on <time datetime="2025-02-09T22:46:01+0700">February 9, 2025</time> using <a href="https://github.com/SwiftDocOrg/swift-doc">swift-doc</a> <span class="version">1.0.0-rc.1</span>.
+</p>
+    </footer>
+</body>
+</html>
