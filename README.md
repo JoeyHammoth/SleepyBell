@@ -191,6 +191,8 @@ We welcome contributions from the community! To get started:
    ```
 5. **Submit a pull request.**
 
+Please review our contribution guidelines [here](CONTRIBUTING.md). Please also review our [security policy](SECURITY.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
 ---
 
 ## 📖 Documentation
@@ -215,9 +217,14 @@ Detailed documentation for the project, including design decisions and code arch
 
 ---
 
-## 📘 Citations
+## Authors
+- **JoeyHammoth** - [My GitHub Profile](https://github.com/JoeyHammoth)
 
-This project requires the use of swiftUI introspect package which can be found [here](https://github.com/siteline/SwiftUI-Introspect). Alarm sound effects are taken from mixkit and can be found [here](https://mixkit.co/free-sound-effects/alarm/). 
+---
+
+## 📘 Citations and Acknowledgments
+
+This project requires the use of swiftUI introspect package which can be found [here](https://github.com/siteline/SwiftUI-Introspect). Alarm sound effects are taken from mixkit and can be found [here](https://mixkit.co/free-sound-effects/alarm/). Icons are provided by Apple via their SF symbols asset. Special thanks to the open-source community for providing tools and resources that made this project possible.
 
 ---
 
